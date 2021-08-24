@@ -13,11 +13,3 @@ modules_enabled = {
 
 --onions_only = true; -- forbid all connection attempts to non-onion servers
 onions_tor_all = true; -- pass all s2s connections through Tor
-
-modules_disabled = {
-    "version";
-    "uptime";
-    "time";
-    "register";
-    --"pep";
-}

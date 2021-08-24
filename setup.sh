@@ -15,7 +15,7 @@ USER_NAME="CHANGEME"
 SERVER_USER_PASS="CHANGEME"
 
 ## prosody
-if [ -f /etc/apt/sources.list.d/prosody.list ]; then
+if [ ! -f /etc/apt/sources.list.d/prosody.list ]; then
     echo "deb http://packages.prosody.im/debian $(lsb_release -sc) main" | sudo tee /etc/apt/sources.list.d/prosody.list
     wget https://prosody.im/files/prosody-debian-packages.key -O- | sudo apt-key add -
     sudo apt update -y
