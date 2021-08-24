@@ -96,7 +96,3 @@ sudo -u prosody prosodyctl register ${USER_NAME} ${TOR_HOSTNAME} ${SERVER_USER_P
 echo "Account created: ${USER_NAME}@${TOR_HOSTNAME}"
 sudo systemctl reload-or-restart prosody
 echo "# Done!"
-
-## DELETE THIS
-#sudo rm -rf /var/lib/tor/services/prosody-xmpp /usr/lib/prosody /var/lib/prosody /etc/prosody; sudo apt remove --purge -y prosody; bash setup.sh
-#kftnyskfdedvifosrqgofi6322js2s4jjvuwltmndkvl4m4xgwe23jad.onion
