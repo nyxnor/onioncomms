@@ -5,7 +5,7 @@
 ## Stage
 
 * Under development, really, do not trust it, run on a disposable instance.
-* I want to add MUC, but Tor does not resolve DNS and hidden services subdomains are encapsulated inside the host header, so the web server manages it with HTTP(s). A solution is to add a second hidden service to be the conference room, but that lowers the UX needing to have two domains to navigate.
+* I want to add MUC, but Tor does not resolve DNS and hidden services subdomains are encapsulated inside the host header, so the web server manages it with HTTP(s). A solution is to add a second hidden service to be the conference room, but that lowers the UX needing to have two domains to navigate. Maybe this https://joinjabber.org/faqs/service/#faq-op-onions?
 
 ## Objective
 
@@ -39,11 +39,13 @@ Sovereignty, host your own server, your configuration, your rules, your privacy,
 * You are the only client by default, registration is disabled in the configuration. This incites people to host their own server instead of asking to be your client or registering themselves.
 * Choose your modules, enable what you want and disable what you dislike or find harmful
 
-## Clients
+## Tools
+
+### Clients
 
 https://riseup.net/de/chat/clients
 
-## Which encryption to use (OTR/OMEMO)?
+### Encryption (OTR/OMEMO)?
 
 * [OTR](https://xmpp.org/extensions/xep-0364.html) does not work with [MUC](https://xmpp.org/extensions/xep-0045.html) (Multi-user chat) but is the most widely used.
 * [OMEMO](https://xmpp.org/extensions/xep-0384.html) is compatible with [Conversations](https://conversations.im/) and MUC.
