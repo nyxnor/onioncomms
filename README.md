@@ -39,7 +39,7 @@ Sovereignty, host your own server, your configuration, your rules, your privacy,
 * You are the only client by default, registration is disabled in the configuration. This incites people to host their own server instead of asking to be your client or registering themselves.
 * Choose your modules, enable what you want and disable what you dislike or find harmful
 
-## CLients
+## Clients
 
 https://riseup.net/de/chat/clients
 
