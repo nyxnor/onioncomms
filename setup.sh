@@ -11,8 +11,8 @@ HS_SERVICE="prosody-xmpp"
 TOR_USER="debian-tor"
 TORRC_OWNER="${USER}"
 PATH_WD=$(pwd)
-USER_NAME="CHANGEME"
-SERVER_USER_PASS="CHANGEME"
+XMPP_SERVER_USER_NAME="CHANGEME"
+XMPP_SERVER_USER_PASS="CHANGEME"
 
 ## prosody
 if [ ! -f /etc/apt/sources.list.d/prosody.list ]; then
@@ -64,9 +64,9 @@ cp sample-virtualhost.cfg.lua ${TOR_HOSTNAME}.cfg.lua
 sudo sed -i 's/TOR_HOSTNAME/'${TOR_HOSTNAME}'/g' ${TOR_HOSTNAME}.cfg.lua >/dev/null
 sudo mv ${TOR_HOSTNAME}.cfg.lua /etc/prosody/conf.avail/${TOR_HOSTNAME}.cfg.lua
 sudo ln -s /etc/prosody/conf.avail/${TOR_HOSTNAME}.cfg.lua /etc/prosody/conf.d/${TOR_HOSTNAME}.cfg.lua
-sudo rm -f /etc/prosody/certs/localhost.*
-sudo rm -f /etc/prosody/conf.avail/localhost.*
-sudo rm -f /etc/prosody/conf.d/localhost.*
+#sudo rm -f /etc/prosody/certs/localhost.*
+#sudo rm -f /etc/prosody/conf.avail/localhost.*
+#sudo rm -f /etc/prosody/conf.d/localhost.*
 sudo chown -R root:prosody /etc/prosody/
 sudo systemctl restart prosody
 
@@ -91,8 +91,8 @@ sudo chown -R root:prosody /etc/prosody/
 sudo systemctl restart prosody
 
 ## USER
-#sudo prosodyctl adduser ${USER_NAME}@${TOR_HOSTNAME}
-sudo -u prosody prosodyctl register ${USER_NAME} ${TOR_HOSTNAME} ${SERVER_USER_PASS}
-echo "Account created: ${USER_NAME}@${TOR_HOSTNAME}"
+#sudo prosodyctl adduser ${XMPP_SERVER_USER_NAME}@${TOR_HOSTNAME}
+sudo -u prosody prosodyctl register ${XMPP_SERVER_USER_NAME} ${TOR_HOSTNAME} ${XMPP_SERVER_USER_PASS}
+echo "Account created: ${XMPP_SERVER_USER_NAME}@${TOR_HOSTNAME}"
 sudo systemctl reload-or-restart prosody
 echo "# Done!"
