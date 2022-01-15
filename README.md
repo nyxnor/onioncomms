@@ -52,27 +52,19 @@ https://riseup.net/de/chat/clients
 
 ## Usage
 
-### Clone the repo
-
-```bash
-git clone https://github.com/nyxnor/prosody-hidden-service
+Clone the repo:
+```sh
+git clone https://github.com/nyxnor/prosody-hidden-service.git
 cd prosody-hidden-service
 ```
 
-### Edit your variables
-
-```bash
-nano setup.sh
-XMPP_SERVER_USER_NAME=CHANGEME
-XMPP_SERVER_USER_PASS=CHANGEME
-Ctrl+X Y
+Install:
+```sh
+sudo ./setup.sh
 ```
 
-or
+## Disclaimer
 
-```bash
-XMPP_SERVER_USER_NAME=CHANGEME
-XMPP_SERVER_USER_PASS=CHANGEME
-sed -i "s/XMPP_SERVER_USER_NAME=.*/XMPP_SERVER_USER_NAME='${XMPP_SERVER_USER_NAME}'/" setup.sh
-sed -i "s/XMPP_SERVER_USER_PASS=.*/XMPP_SERVER_USER_PASS='${XMPP_SERVER_USER_PASS}'/" setup.sh
-```
+Read the code, it will modify configuration files of prosody and tor.
+
+Registering with a new account as a client is disabled by default, only the server administrator can do that for security reasons. For descentralization, everyone should run their own server.

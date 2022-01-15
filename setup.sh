@@ -1,98 +1,85 @@
-#!/bin/bash
+#!/usr/bin/env sh
 
-## Video guide - https://www.youtube.com/watch?v=aI6csrdJa_0
+[ "$(id -u)" -ne 0 ] && printf '%s\n' "Run as root" && exit 1
 
-## XMPP clients - https://riseup.net/de/chat/clients
+tor_conf="/etc/tor/torrc"
+tor_data_dir="/var/lib/tor"
+tor_data_dir_services="${tor_data_dir}/services"
+prosody_lib_dir="/usr/lib/prosody"
+prosody_var_dir="/var/lib/prosody"
+prosody_conf_dir="/etc/prosody"
 
-## variables - directories should not include "/" in the end.
-TORRC=/etc/tor/torrc
-HS_DIR=/var/lib/tor/services
-HS_SERVICE="prosody-xmpp"
-TOR_USER="debian-tor"
-TORRC_OWNER="${USER}"
-PATH_WD=$(pwd)
-XMPP_SERVER_USER_NAME="CHANGEME"
-XMPP_SERVER_USER_PASS="CHANGEME"
-
-## prosody
-if [ ! -f /etc/apt/sources.list.d/prosody.list ]; then
-    echo "deb http://packages.prosody.im/debian $(lsb_release -sc) main" | sudo tee /etc/apt/sources.list.d/prosody.list
-    wget https://prosody.im/files/prosody-debian-packages.key -O- | sudo apt-key add -
-    sudo apt update -y
+#########################
+## Onion service
+if ! grep -q "HiddenServiceDir ${tor_data_dir_services}/xmpp" "${tor_conf}"; then
+  echo "Creating Hidden Service"
+  echo "
+HiddenServiceDir ${tor_data_dir_services}/xmpp
+HiddenServicePort 5222 127.0.0.1:5222
+HiddenServicePort 5269 127.0.0.1:5269
+HiddenServicePort 5280 127.0.0.1:5280
+HiddenServicePort 5281 127.0.0.1:5281
+" | tee -a "${tor_conf}"
+  systemctl reload tor
 fi
-MAIN_PKGS="tor prosody prosody-modules"
-sudo apt install -y ${MAIN_PKGS}
+sleep 1
+hostname=$(cat ${tor_data_dir_services}/xmpp/hostname)
 
-## MODULES - dedicated to community and alpha modules not installed by default
 
-## mod_omemo_all_access - https://hg.prosody.im/prosody-modules/file/default/mod_omemo_all_access/README.markdown
-wget https://hg.prosody.im/prosody-modules/raw-file/default/mod_omemo_all_access/mod_omemo_all_access.lua
-## mod_require_otr - https://hg.prosody.im/prosody-modules/file/default/mod_require_otr/README.markdown
-#wget https://hg.prosody.im/prosody-modules/raw-file/default/mod_require_otr/mod_require_otr.lua
-## mod_onions - https://hg.prosody.im/prosody-modules/file/default/mod_onions/README.markdown
-#wget https://hg.prosody.im/prosody-modules/raw-file/default/mod_onions/mod_onions.lua
+#########################
+## Prosody
+echo "Setting up prosody"
 
-## main
-sudo mv mod_*.lua /usr/lib/prosody/modules
+cp prosody/mod_*.lua "${prosody_lib_dir}/modules/"
+chmod 644 "${prosody_lib_dir}/modules/mod_onions.lua"
+chmod 644 "${prosody_lib_dir}/modules/mod_http_upload.lua"
+chmod 644 "${prosody_lib_dir}/modules/mod_require_otr.lua"
+chown -R root:prosody "${prosody_lib_dir}"
 
-## HIDDEN SERVICE
-echo "# Creating Hidden Service"
-sudo sed -i "/HiddenServiceDir .*${HS_SERVICE}/,/^\s*$/{d}" ${TORRC} ## delete old block to avoid duplication
-echo "
-HiddenServiceDir ${HS_DIR}/${HS_SERVICE}
-HiddenServicePort 5222 unix:/var/run/hs-${HS_SERVICE}-5222.sock
-HiddenServicePort 5269 unix:/var/run/hs-${HS_SERVICE}-5269.sock
-" | sudo tee -a ${TORRC}
-awk 'NF > 0 {blank=0} NF == 0 {blank++} blank < 2' ${TORRC} | sudo tee ${TORRC}.tmp >/dev/null && sudo mv ${TORRC}.tmp ${TORRC}
-sudo chown -R ${USER}:${TOR_USER} ${TORRC}
-sudo chown -R ${TOR_USER}:${TOR_USER} ${HS_DIR}
-sudo chmod 640 ${TORRC}
-sudo chmod 700 ${HS_DIR}
-#sudo /etc/init.d/tor reload
-sudo systemctl reload-or-restart tor
-sleep 3
-TOR_HOSTNAME=$(sudo -u ${TOR_USER} cat ${HS_DIR}/${HS_SERVICE}/hostname)
+cp prosody/virtualhost.cfg.lua "${hostname}.cfg.lua"
+sed -i'' "s|hostname|${hostname}|g" "${hostname}.cfg.lua"
+sed -i'' "s|prosody_conf_dir|${prosody_conf_dir}|g" "${hostname}.cfg.lua"
 
-## PROSODY.CFG.LUA
-sudo cp /etc/prosody/prosody.cfg.lua{,.dist}
-sudo cp sample-prosody.cfg.lua prosody.cfg.lua
-sudo sed -i 's/TOR_HOSTNAME/'${TOR_HOSTNAME}'/g' prosody.cfg.lua >/dev/null
-sudo mv prosody.cfg.lua /etc/prosody/prosody.cfg.lua
+mv "${hostname}.cfg.lua" "${prosody_conf_dir}/conf.avail/${hostname}.cfg.lua"
 
-## CONF.AVAIL/VIRTUALHOST.CFG.LUA
-cp sample-virtualhost.cfg.lua ${TOR_HOSTNAME}.cfg.lua
-sudo sed -i 's/TOR_HOSTNAME/'${TOR_HOSTNAME}'/g' ${TOR_HOSTNAME}.cfg.lua >/dev/null
-sudo mv ${TOR_HOSTNAME}.cfg.lua /etc/prosody/conf.avail/${TOR_HOSTNAME}.cfg.lua
-sudo ln -s /etc/prosody/conf.avail/${TOR_HOSTNAME}.cfg.lua /etc/prosody/conf.d/${TOR_HOSTNAME}.cfg.lua
-#sudo rm -f /etc/prosody/certs/localhost.*
-#sudo rm -f /etc/prosody/conf.avail/localhost.*
-#sudo rm -f /etc/prosody/conf.d/localhost.*
-sudo chown -R root:prosody /etc/prosody/
-sudo systemctl restart prosody
+ln -sf "${prosody_conf_dir}/conf.avail/${hostname}.cfg.lua" "${prosody_conf_dir}/conf.d/${hostname}.cfg.lua"
 
-## CERTIFICATE
-cp sample-virtualhost.cnf ${TOR_HOSTNAME}.cnf
-sudo sed -i 's/TOR_HOSTNAME/'${TOR_HOSTNAME}'/g' ${TOR_HOSTNAME}.cnf >/dev/null
-openssl req -new -x509 -days 1825 -nodes -out ${TOR_HOSTNAME}.crt -newkey rsa:4096 -keyout ${TOR_HOSTNAME}.key -config ${TOR_HOSTNAME}.cnf
-sudo mv ${TOR_HOSTNAME}.cnf /var/lib/prosody/${TOR_HOSTNAME}.cnf
-sudo mv ${TOR_HOSTNAME}.crt /var/lib/prosody/${TOR_HOSTNAME}.crt
-sudo mv ${TOR_HOSTNAME}.key /var/lib/prosody/${TOR_HOSTNAME}.key
-sudo chmod 640 /var/lib/prosody/${TOR_HOSTNAME}.cnf
-sudo chmod 640 /var/lib/prosody/${TOR_HOSTNAME}.crt
-sudo chmod 640 /var/lib/prosody/${TOR_HOSTNAME}.key
-sudo chmod 700 -R /var/lib/prosody/
-sudo chown -R prosody:prosody /var/lib/prosody/
-#sudo -u prosody prosodyctl cert generate ${TOR_HOSTNAME} ## this does not allow sourcing from .conf like openssl does
-sudo ln -s /var/lib/prosody/${TOR_HOSTNAME}.crt /etc/prosody/certs/${TOR_HOSTNAME}.crt
-sudo ln -s /var/lib/prosody/${TOR_HOSTNAME}.key /etc/prosody/certs/${TOR_HOSTNAME}.key
-sudo chmod 640 /etc/prosody/certs/${TOR_HOSTNAME}.crt
-sudo chmod 640 /etc/prosody/certs/${TOR_HOSTNAME}.key
-sudo chown -R root:prosody /etc/prosody/
-sudo systemctl restart prosody
+cp prosody/prosody.cfg.lua "${prosody_conf_dir}/prosody.cfg.lua"
+chmod 644 "${prosody_conf_dir}/prosody.cfg.lua"
 
-## USER
-#sudo prosodyctl adduser ${XMPP_SERVER_USER_NAME}@${TOR_HOSTNAME}
-sudo -u prosody prosodyctl register ${XMPP_SERVER_USER_NAME} ${TOR_HOSTNAME} ${XMPP_SERVER_USER_PASS}
-echo "Account created: ${XMPP_SERVER_USER_NAME}@${TOR_HOSTNAME}"
-sudo systemctl reload-or-restart prosody
-echo "# Done!"
+chown -R root:prosody "${prosody_conf_dir}"
+systemctl restart prosody
+
+#########################
+## Certificate
+echo "Configuring the SSL certificate"
+#prosodyctl cert generate "${hostname}"
+cp prosody/openssl.cnf "prosody/${hostname}.openssl.cnf"
+sed -i'' "s/example.com/${hostname}/g" "prosody/${hostname}.openssl.cnf"
+openssl req -new -x509 -days 1825 -nodes -out "${prosody_conf_dir}/certs/${hostname}.crt" -newkey rsa:4096 -keyout "${prosody_conf_dir}/certs/${hostname}.key" -config  "prosody/${hostname}.openssl.cnf"
+rm -f "prosody/${hostname}.openssl.cnf"
+
+ln -sf "${prosody_var_dir}/${hostname}.crt" "${prosody_conf_dir}/certs/${hostname}.crt"
+ln -sf "${prosody_var_dir}/${hostname}.key" "${prosody_conf_dir}/certs/${hostname}.key"
+
+chown -R prosody:prosody "${prosody_var_dir}"
+chown -R root:prosody "${prosody_conf_dir}"
+
+systemctl restart prosody
+
+prosodyctl register admin "${hostname}" changeme
+
+printf %s"\nProsody is configured
+Change your password with:
+$ sudo -u prosody prosodyctl passwd admin@${hostname}
+
+Log in with your XMPP client:
+user: admin
+password: changeme
+hostname: ${hostname}
+port: 5222
+
+Verify the certificate information:
+"
+openssl x509 -in "${prosody_conf_dir}/certs/${hostname}.crt" -noout -sha256 -fingerprint
+openssl x509 -in "${prosody_conf_dir}/certs/${hostname}.crt" -noout -sha256 -dates

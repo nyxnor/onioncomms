@@ -21,7 +21,7 @@
 -- for the server. Note that you must create the accounts separately
 -- (see https://prosody.im/doc/creating_accounts for info)
 -- Example: admins = { "user1@example.com", "user2@example.net" }
-admins = { }
+-- admins = { }
 
 -- Enable use of libevent for better performance under high load
 -- For more information see: https://prosody.im/doc/libevent
@@ -32,7 +32,7 @@ admins = { }
 -- will look for modules first. For community modules, see https://modules.prosody.im/
 -- For a local administrator it's common to place local modifications
 -- under /usr/local/ hierarchy:
-plugin_paths = { "/usr/local/lib/prosody/modules" }
+plugin_paths = { "/usr/lib/prosody/modules" }
 
 -- This is the list of modules Prosody will load on startup.
 -- It looks for mod_modulename.lua in the plugins folder, so make sure that exists too.
@@ -42,18 +42,17 @@ modules_enabled = {
 	-- Generally required
 		"roster"; -- Allow users to have a roster. Recommended ;)
 		"saslauth"; -- Authentication for clients and servers. Recommended if you want to log in.
-		--"tls"; -- Add support for secure TLS on c2s/s2s connections
+		"tls"; -- Add support for secure TLS on c2s/s2s connections
 		"dialback"; -- s2s dialback support
 		"disco"; -- Service discovery
 
 	-- Not essential, but recommended
 		"carbons"; -- Keep multiple clients in sync
-		"pep_simple"; -- Enables users to publish their avatar, mood, activity, playing music and more
+		"pep"; -- Enables users to publish their avatar, mood, activity, playing music and more
 		"private"; -- Private XML storage (for room bookmarks, etc.)
 		"blocklist"; -- Allow users to block communications with other users
-		--"vcard4"; -- User profiles (stored in PEP)
-		--"vcard_legacy"; -- Conversion between legacy vCard and PEP Avatar, vcard
-		"limits"; -- Enable bandwidth limiting for XMPP connections
+		"vcard4"; -- User profiles (stored in PEP)
+		"vcard_legacy"; -- Conversion between legacy vCard and PEP Avatar, vcard
 
 	-- Nice to have
 		--"version"; -- Replies to server version requests
@@ -61,7 +60,7 @@ modules_enabled = {
 		--"time"; -- Let others know the time here on this server
 		--"ping"; -- Replies to XMPP pings with pongs
 		--"register"; -- Allow users to register on this server using a client and change passwords
-		"mam"; -- Store messages in an archive and allow users to access it
+		--"mam"; -- Store messages in an archive and allow users to access it
 		"csi_simple"; -- Simple Mobile optimizations
 
 	-- Admin interfaces
@@ -69,13 +68,14 @@ modules_enabled = {
 		--"admin_telnet"; -- Opens telnet console interface on localhost port 5582
 
 	-- HTTP modules
-		--"bosh"; -- Enable BOSH clients, aka "Jabber over HTTP"
+		"bosh"; -- Enable BOSH clients, aka "Jabber over HTTP"
 		--"websocket"; -- XMPP over WebSockets
-		--"http_files"; -- Serve static files from a directory over HTTP
+		"http_files"; -- Serve static files from a directory over HTTP
 
 	-- Other specific functionality
 		"posix"; -- POSIX functionality, sends server to background, enables syslog, etc.
-		--"groups"; -- Shared roster support
+		--"limits"; -- Enable bandwidth limiting for XMPP connections
+		"groups"; -- Shared roster support
 		--"server_contact_info"; -- Publish contact information for this service
 		--"announce"; -- Send announcement to all online users
 		--"welcome"; -- Welcome users who register accounts
@@ -133,17 +133,6 @@ s2s_secure_auth = false
 -- certificates for some domains by specifying a list here.
 
 --s2s_secure_domains = { "jabber.org" }
-
--- Enable rate limits for incoming client and server connections
-
-limits = {
-  c2s = {
-    rate = "10kb/s";
-  };
-  s2sin = {
-    rate = "30kb/s";
-  };
-}
 
 -- Select the authentication backend to use. The 'internal' providers
 -- use Prosody's configured data storage to store the authentication data.
