@@ -11,26 +11,11 @@ Nonetheless, this should not discourage you from porting to any other *nix syste
 
 ## Server configuration
 
-Read the readme inside the folder of the program you want to use.
+Read the README.md inside the folder of the program you want to use.
 
 ## Client configuration
 
-### Desktop
-
-In order for your client to work, you need to route through tor the client application. For this, configure a TCP socket SocksPort on your Tor configuration file. For example:
-```sh
-SocksPort 9050
-```
-And on the client application, normally on `Network` -> `Proxy`, setup `SOCKS5` proxy with `Address: 127.0.0.1` and `Port: 9050`.
-
-If the application does not support configuring a proxy or even if it says it support but it is [broken as it happens with mumble](https://github.com/mumble-voip/mumble/issues/1812), torify the application (e.g.: mumble client):
-```sh
-torsocks mumble
-```
-
-### Mobile
-
-On android, configure [Orbot](https://guardianproject.info/apps/org.torproject.android/) to proxy the client application with Tor.
+Read [TORIFICATION.MD](https://github.com/nyxnor/onioncomms/blob/main/TORIFICATION.md).
 
 ## Protocols
 
