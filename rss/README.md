@@ -31,7 +31,7 @@ newsboat -r
 
 ### QuiteRSS
 
-QuiteRSS isa feed reader written in Qt/C++.
+QuiteRSS is a feed reader written in Qt/C++.
 
 Install quiterss:
 ```sh

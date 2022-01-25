@@ -38,6 +38,8 @@ Install and configure murmur (mumble-server)
 sudo ./setup.sh
 ```
 
+TODO: To install uMurmur https://github.com/umurmur/umurmur/wiki/Building
+
 ### Client
 
 #### Configure desktop client
