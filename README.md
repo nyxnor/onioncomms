@@ -17,9 +17,17 @@ Read the README.md inside the folder of the program you want to use.
 
 Read [TORIFICATION.MD](https://github.com/nyxnor/onioncomms/blob/main/TORIFICATION.md).
 
-## Protocols
+## Class
 
-Only Mumble (VoIP) and Prosody (XMPP) scripts are complete.
+### File-Sharing
+
+* Magic-wormhole
+* OnionShare
+
+### RSS
+
+* Newboat
+* QuitRSS
 
 ### VOIP
 
@@ -34,3 +42,7 @@ Only Mumble (VoIP) and Prosody (XMPP) scripts are complete.
 ### Ricochet
 
 * Ricochet-refresh
+
+### Gaming
+
+* TEG

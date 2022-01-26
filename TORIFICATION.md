@@ -2,13 +2,11 @@
 
 The documents contained within this section provide information and instructions on configuring various software to securely connect to the Internet via Tor.
 
-This guide is intended for client side applications to be used by plain Debian users, if you are using Whonix, you don't need to configure any client to be torified, as all of the traffic is already torified on your machine.
-
 In short, do not torify any applications yourself unless you know exactly what you are doing. If, however, you wish to study the complexities surrounding the subject, then please feel free to indulge yourself and even go as far as providing new instructions or implementations. In the meantime, see this article more as a reference for developers and advanced users. If you do not fall into one of these two categories then for your own security, stick with the Tor Browser from https://www.torproject.org.
 
-This document is based on [TorifyHOWTO](https://gitlab.torproject.org/legacy/trac/-/wikis/doc/TorifyHOWTO) ([credits](https://gitlab.torproject.org/legacy/trac/-/wikis/doc/TorifyHOWTO/legal)).
+This document is based on [TorifyHOWTO](https://gitlab.torproject.org/legacy/trac/-/wikis/doc/TorifyHOWTO) ([credits](https://gitlab.torproject.org/legacy/trac/-/wikis/doc/TorifyHOWTO/legal)), it has updated links and information and used [Whonix wiki](https://www.whonix.org/wiki/Remote_Administration#Remmina) for reference.
 
-This document has updated links unlike the documentation above as well as using [Whonix wiki](https://www.whonix.org/wiki/Remote_Administration#Remmina) for reference.
+This guide is intended for client side applications to be used by any *nix user. Debian apt is used as an example to install the client software, but nonetheless, application configuration apply to all plainnet operating system. If you are using Whonix, you don't need to configure any client to be torified, as all of the traffic is already torified on your machine.
 
 ## Terminology
 
@@ -106,6 +104,7 @@ Security overall:
 
 | |Application proxy settings|Force the application to use a proxy (torsocks or orbot)|Transparent Proxy|Isolating Proxy|
 ---|---|---|---|---
+|**Example**|manual configuration|torsocks, orbot|Tails|Whonix|
 |**Security**| - Configuring the proxy settings manually does not ensure the protocol won't leak DNS requests and IP address. This method is unreliable. | - Torsocks uses the LD_PRELOAD mechanism (man ld.so.8) which means that if the application is not using the libc or for instance uses raw syscalls, torsocks will be useless and the traffic will not go through Tor. <br> <br> - Torsocks allows you to use most applications in a safe way with Tor. It ensures that DNS requests are handled safely and explicitly rejects any traffic other than TCP from the application you're using. This process is transparent to the user and if torsocks detects any communication that can't go through the Tor network such as UDP traffic, for instance, the connection is denied. If, for any reason, there is no way for torsocks to provide the Tor anonymity guarantee to your application, torsocks will force the application to quit and stop everything. | - Safety against leak of real IP address depends on implementation <br> <br> - [Anonymizing Middlebox](https://trac.torproject.org/projects/tor/wiki/doc/TransparentProxy#AnonymizingMiddlebox) can prevent IP and DNS leaks, but there are other kinds of critical leaks (time zone, time sync, list of installed packages, identity correlation, and much more...) <br> <br> - Other implementations such [transparently anonymizing traffic for a specific user and local redirection through Tor](https://trac.torproject.org/projects/tor/wiki/doc/TransparentProxy#Transparentlyanonymizingtrafficforaspecificuser) do not provide strong IP and DNS leak protection like Anonymizing Middlebox | - Connections are forced through Tor. DNS leaks are impossible, and even malware with root privileges cannot discover the user's real IP address. Leak tested through [corridor](https://github.com/Whonix/corridor) (Tor traffic whitelisting gateway) and other [leak tests](https://www.whonix.org/wiki/Dev/Leak_Tests). <br> <br> - Depending on the implementation, this can provide some protocol leak and fingerprinting protection. For example see [Whonix's Protocol-Leak-Protection and Fingerprinting-Protection](https://whonix.org/wiki/Whonix%27s_Protocol-Leak-Protection_and_Fingerprinting-Protection) |
 |**Advantages**| - Does not need third party software (wrapper) <br> <br> - Only a few proxy settings needed, sometimes a few more settings like 'use remote DNS' are required | - No proxy settings inside the application are needed <br> <br> - The use of 'Use Remote DNS' is not required, nor can it be forgotten | - No proxy settings inside the application needed <br> <br> - The use of 'Use Remote DNS' is not required, nor can it be forgotten | - All applications can only access internet over Tor. Direct connections are impossible due to either a virtual internal network and/or physical isolation. <br> <br> - Each application gets their own SocksPort. This can still be combined with Trans- and DnsPort |
 |**Disadvantages**| - Each application has to be checked and configured against DNS leaks <br> <br> - The application is not forced to honor the proxy settings. Some applications such as Skype and BitTorrent do not care what the proxy settings are and use direct connections anyway. Also once the application is infected, it's not forced to honor the application settings | - It's a redirector, not a jail. Applications may still decide to use fancy techniques to achieve direct connections. Also once the application or machine is infected with malware, it can break out of the redirector <br> <br> - There is no guarantees of it remaining bug-free <br> <br> - It also does not magically prevent protocol leaks, see [torsocks homepage](https://gitweb.torproject.org/torsocks.git/) for details. | - More complex and complicated, requires additional software <br> <br> - Too many non-IP related leaks, which are nonetheless serious issues. Rather use an [Isolating Proxy](https://trac.torproject.org/projects/tor/wiki/doc/TorifyHOWTO/IsolatingProxy) | - An Isolating Proxy requires at least two machines. Those machines can be either virtual machines or two physically isolated machines. Both machines are connected through an isolated LAN. One machine is called Gateway. The other one is called Workstation. |
@@ -114,7 +113,7 @@ Security overall:
 
 - The best method is using Isolating Proxy, mostly done by Whonix with [Security by Isolation](https://www.whonix.org/wiki/About#Security_by_Isolation) to have online anonymity via Tor. The Gateways runs Tor processes while the Workstation runs user applications on a completely isolated network, therefore only connections through Tor are permitted. Read [Whonix design](https://www.whonix.org/wiki/Main_Page#Whonix_%E2%84%A2_Design)
 
-- The second best is Transparent Proxy, mostly done by Tails [implementation](https://tails.boum.org/contribute/design/#index30h3) and [TorBox](https://github.com/radio24/TorBox/blob/master/etc/tor/torrc). It does not have security against an infected host with root privileges or access to the tor user, as it can control the tor process directly, altough onion-grater can filter on port 9051, it does not filter on port 9052 and the unix domain socket /run/tor/control.
+- The second best is Transparent Proxy, mostly done by Tails [implementation](https://tails.boum.org/contribute/design/#index30h3) and [TorBox](https://github.com/radio24/TorBox/blob/master/etc/tor/torrc). It does not have security against an infected host with root privileges or access to the tor user, as it can control the tor process directly, altough onion-grater can filter on port 9051, it does not filter on port 9052 and the unix domain socket /run/tor/control. It can route all traffic on a standalone machine through Tor and every network application will make its TCP connections through Tor, no application will be able to reveal your IP address by connecting directly. The other option is creating an anonymizing middlebox that intercepts traffic from other machines and redirects it through Tor.
 
 - Torsocks works on most cases but the drawbacks enough to expose user location and DNS leaks by not routing through Tor when the application is not using the libc or for instance uses raw syscalls, torsocks will be useless and the traffic will not go through Tor.
 
@@ -170,6 +169,8 @@ The other option is creating an anonymizing middlebox that intercepts traffic fr
 
 ## Desktop applications
 
+### Configure tor
+
 Download tor:
 ```sh
 sudo apt install -y tor
@@ -180,14 +181,17 @@ The tor package comes pre-configured on Debian, but in the case it is not found 
 SocksPort 9050
 ```
 
-1. **Application proxy settings**
+### Connect via Tor
 
-Note: `curl` is just an example.
+`curl` is just an example
+
+1. **Application proxy settings**
 
 **Warning**: depending on the implementation, it may leak DNS request.
 
 And on the client application, normally on `Network` -> `Proxy`, setup `SOCKS5` proxy with `Address: 127.0.0.1` and `Port: 9050`.
 
+Usage:
 ```sh
 curl -x socks5h://127.0.0.1:9050 https://check.torproject.org/api/ip
 ```
@@ -207,8 +211,6 @@ torsocks curl https://check.torproject.org/api/ip
 
 **Warning**:  Too many non-IP related leaks, which are nonetheless serious issues.
 
-It can route all traffic on a standalone machine through Tor and every network application will make its TCP connections through Tor, no application will be able to reveal your IP address by connecting directly. The other option is creating an anonymizing middlebox that intercepts traffic from other machines and redirects it through Tor.
-
 Usage:
 ```
 curl https://check.torproject.org/api/ip
@@ -216,9 +218,7 @@ curl https://check.torproject.org/api/ip
 
 4. **Isolating Proxy**
 
-Whonix is one example.
-
-It is not need to configure anything to route through Tor, cause all the traffic is enforced to go via the socks proxy, and if it does not work, it is not transmitted.
+All trafic must be routed through tor, no need to chage anything.
 
 Usage:
 ```
@@ -309,12 +309,12 @@ Edit your sources.list (use the list folder `/etc/apt/sources.list.d/tor.list`) 
 
 
 Configure Debian plainnet repository to use tor:
-```
+```sh
 deb tor+https://deb.debian.org/debian <DIST> main contrib non-free
 ```
 
 Configure [Debian onion service repository](https://onion.debian.org/):
-```
+```sh
 deb tor+http://2s4yqjx5ul6okpp3f2gaunr2syex5jgbfpfvhxxbbjwnrsvbk5v3qbid.onion/debian <DIST> main contrib non-free
 ```
 
