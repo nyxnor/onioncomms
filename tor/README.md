@@ -14,27 +14,29 @@ sudo apt install -y tor
 
 The tor package comes pre-configured on Debian, the defaults are on `/usr/share/tor/tor-service-defaults-torrc` or `/usr/local/etc/tor/torrc-defaults`, and the torrc is on `/etc/tor/torrc` or `/usr/local/etc/tor/torrc` (depends on your build), or `$HOME/.torrc` if that file is not found.
 
+### Diversion - Conflicts
+
 Modifying the torrc might cause diversion conflicts when the tor package is upgraded, because of this, this project recommends to modify alternatives files that will be included and read by tor when it starts. These files can be include with the key `%include`. Unfortunately the tor debian package does not commed with this configuration enabled by default, so you will need to edit the `torrc` anyway, add:
 ```
 %include /etc/tor/torrc.d/*.conf
 ```
 This will make every `.conf` file that is inside `/etc/tor/torrc.d/` directory to be included and interpreted as a tor run commands file. It is also great for organization purposes. The next time there is a package diversion in tor, signal it to `N`ot override the configuration file, and if it is overridden, you just have to included that line again and your alternative configurations will be loaded.
 
-## Apply configuration changes
+### Apply configuration changes
 
-Reload tor if you have made any configuration changes so it can be applied to the running instance:
+After modifying the configuration files, reload tor so it can be applied to the running instance:
 ```sh
 sudo systemctl reload tor
 ```
 
-## SocksPort
+### SocksPort
 
 This is needed for client applications to use tor as a SOCKS proxy:
 ```
 SocksPort 127.0.0.1:9050
 ```
 
-## Bridges
+### Bridges
 
 Configure the bridges:
 Then configure the bridges using the following format:
@@ -49,7 +51,7 @@ Bridge [transport] IP:ORPort [fingerprint]
 - `ClientTransportPlugin transport exec path-to-binary [options]` ([ref](https://2019.www.torproject.org/docs/tor-manual.html.en#ClientTransportPlugin)): In its first form, when set along with a corresponding Bridge line, the Tor client forwards its traffic to a SOCKS-speaking proxy on "IP:PORT". (IPv4 addresses should written as-is; IPv6 addresses should be wrapped in square brackets.) It’s the duty of that proxy to properly forward the traffic to the bridge. In its second form, when set along with a corresponding Bridge line, the Tor client launches the pluggable transport proxy executable in path-to-binary using options as its command-line options, and forwards its traffic to it. It’s the duty of that proxy to properly forward the traffic to the bridge.
 - `Bridge [transport] IP:ORPort [fingerprint]` ([ref](https://2019.www.torproject.org/docs/tor-manual.html.en#Bridge)): When set along with UseBridges, instructs Tor to use the relay at "IP:ORPort" as a "bridge" relaying into the Tor network. If "fingerprint" is provided (using the same format as for DirAuthority), we will verify that the relay running at that location has the right fingerprint. We also use fingerprint to look up the bridge descriptor at the bridge authority, if it’s provided and if UpdateBridgesFromAuthority is set too. If "transport" is provided, it must match a ClientTransportPlugin line. We then use that pluggable transport’s proxy to transfer data to the bridge, rather than connecting to the bridge directly. Some transports use a transport-specific method to work out the remote address to connect to. These transports typically ignore the "IP:ORPort" specified in the bridge line. Tor passes any "key=val" settings to the pluggable transport proxy as per-connection arguments when connecting to the bridge. Consult the documentation of the pluggable transport for details of what arguments it supports.
 
-### obfs4 and meek
+### Obfs4 and Meek
 
 To use obfs4 or meek bridges, it is required to install obfs4proxy:
 ```sh
@@ -61,7 +63,7 @@ Value of `ClientTransportPlugin` should be:
 ClientTransportPlugin meek_lite,obfs4 exec /usr/bin/obfs4proxy
 ```
 
-Configure obfs4 bridges. You have three ways to get new bridge-addresses:
+Configure obfs4 bridges. These are some ways to get new bridge-addresses:
 - Go to https://bridges.torproject.org/ -> Advanced Options -> obfs4 -> Get Bridges
 - Send an email to bridges@torproject.org, using an address from Riseup or Gmail with "get transport obfs4" in the body of the mail.
 - Via Telegram (official): https://t.me/GetBridgesBot and type the command `/bridges` to get a bridge.
@@ -75,18 +77,27 @@ Configure meek bridge (there is only one):
 Bridge meek_lite 192.0.2.2:2 97700DFE9F483596DDA6264C4D7DF7641E1E39CE url=https://meek.azureedge.net/ front=ajax.aspnetcdn.com
 ```
 
-### snowflake
+### Snowflake
 
 To use obfs4 or meek bridges, it is required to install snowflake-client (this might not work if the torproject dor org domain is blocked, because some dependencies are extracted from that domain, git subomain). Requirements is Go 1.13+.
 ```sh
+## install requirements
 sudo apt install -y git golang
+## clone repository
 git clone https://github.com/keroserene/snowflake
-export GO111MODULE="on"
+## change directory to snowflake/client
 cd snowflake/client
+## will force using Go modules even if the project is in your GOPATH
+export GO111MODULE="on"
+## install packages and dependencies
 go get
+## compile package and dependencies
 go build
+## move binary to path
 sudo cp client /usr/bin/snowflake-client
+## go back to previous folder
 cd -
+## delete repository
 rm -rf snowflake
 ```
 
@@ -104,6 +115,8 @@ Bridge snowflake 192.0.2.3:1 2B280B23E1107BB62ABFC40DDCC8824814F80A72
 
 # Tor Browser
 
+Tor Browser is a ESR Firefox hardened and modified by the Tor Project to be used with the Tor network.
+
 Note, if torproject dot org is blocked, try this mirror: https://cyberside.net.ee/sibul/download/
 
 ## Graphical installation
@@ -119,63 +132,84 @@ dist_url="https://dist.torproject.org/torbrowser"
 
 Choose the version (Note: if you have tor service installed, you can torify curl with `torsocks curl`):
 ```sh
-curl -s "${dist_url}" | grep -oP "alt=\"\[DIR\]\"> <a href=\"\K[0-9]{2}.[0-9]{1,}.[0-9]{1,}"
+curl --silent --location "${dist_url%*/}/" | grep -oP "alt=\"\[DIR\]\"> <a href=\"\K[0-9]{2}.[0-9]{1,}.[0-9]{1,}"
 ```
 
-Define the version:
+Define the version (avoid `a`lpha releases):
 ```
 tor_browser_version="VERSION_YOU_WANT"
 ```
 
 Check for requirements and install the compressed archive and the signature file, that depends on your architecture and locale:
 ```sh
+## define architecture
 case "$(uname -m)" in x86_64|amd64) arch="64"; esac
-! command -v curl && sudo apt update -y && sudo apt install -y curl
-dist_file="tor-browser-linux${arch}-${tor_browser_version}_${LANG%%.*}.tar.xz"
-curl --tlsv1.3 --proto =https --location --remote-name-all --remote-header-name ${dist_url%*/}/${tor_browser_version}/${dist_file}{,asc}
+## check requirements and if not installed, install it
+! command -v curl >/dev/null && sudo apt update -y && sudo apt install -y curl
+## define file name
+dist_lang="$(echo "${LANG%%.*}" | tr "_" "-")"
+dist_file="tor-browser-linux${arch}-${tor_browser_version}_${dist_lang}.tar.xz"
+## download file and signature
+curl --tlsv1.3 --proto =https --location --remote-name-all --remote-header-name ${dist_url%*/}/${tor_browser_version}/${dist_file}{,.asc}
 ```
 
 ## Verify the signature
 
-### Import the key
+### Keyring
+
+#### Import the keyring
 
 Read also [TPO How can I verify Tor Browser's signature?](https://support.torproject.org/tbb/how-to-verify-signature/)
 
-Import the Tor Browser Developers signing key. There are four methods:
-
-1. Import the Tor Browser Developers signing key with gpg locate:
+Import the Tor Browser Developers signing key with gpg locate:
 ```sh
 gpg --auto-key-locate nodefault,wkd --locate-keys torbrowser@torproject.org
 ```
 
-2. Import the Tor Browser Developers public key from torproject dot org with curls:
+#### Save the keyring to a file
+
+```sh
+gpg --output ./tor.keyring --export 0xEF6E286DDA85EA2A4BA7DE684E2C6E8793298290
+```
+
+#### Verify the signature
+
+Verify the file against the signed file using the keyring
+```sh
+gpgv --keyring ./tor.keyring ${dist_file}.asc ${dist_file}
+```
+From gpg output, `Good signature` is what you need, with the primary key fingerprint matching the one verified by the user earlier on.
+Ignore `WARNING: This key is not certified with a trusted signature!`, it is a local trust level configuration for that key.
+
+### Public key
+
+#### Import the public key
+
+Import the Tor Browser Developers signing key. These are some methods:
+
+1. Import the Tor Browser Developers public key from torproject dot org with curls:
 ```sh
 curl -s https://openpgpkey.torproject.org/.well-known/openpgpkey/torproject.org/hu/kounek7zrdx745qydx6p59t9mqjpuhdf | gpg --import -
 ```
 
-3. Import the Tor Browser Developers public key from openpgp dot org with curl:
+2. Import the Tor Browser Developers public key from openpgp dot org with curl:
 ```sh
 curl -s https://keys.openpgp.org/vks/v1/by-fingerprint/EF6E286DDA85EA2A4BA7DE684E2C6E8793298290 | gpg --import -
 ```
 
-4. Import the Tor Browser Developers public key from openpgp dot org with gpg:
+3. Import the Tor Browser Developers public key from openpgp dot org with gpg:
 ```sh
 gpg --keyserver keys.openpgp.org --search-keys torbrowser@torproject.org
 ```
 
-### Save the key to a file
+#### Verify the signature
 
+Verify the file against the signed file and the signers public key:
 ```sh
-gpg --output ./tor.key --export 0xEF6E286DDA85EA2A4BA7DE684E2C6E8793298290
+gpg --verify ${dist_file}.asc ${dist_file}
 ```
-
-### Verify the signature
-
-`dist_file` was defined on the command line installation. It is something like `tor-browser-linux64-11.0.4_en-US.tar.xz`, where `linux64` is the kernel and the architecture, `11.0.4` the version you are installing and `en-US` is the language locale you want.
-```sh
-gpgv --keyring ./tor.keyring ${dist_file}.asc ${dist_file}
-```
-
+From gpg output, `Good signature` is what you need, with the primary key fingerprint matching the one verified by the user earlier on.
+Ignore `WARNING: This key is not certified with a trusted signature!`, it is a local trust level configuration for that key.
 
 ## torbrowser-launcher
 
@@ -194,6 +228,8 @@ _Cache and configuration files will be stored in ~/.cache/torbrowser and
 ~/.config/torbrowser._
 _Each subsequent execution after installation will simply launch the most
 recent TBB, which is updated using Tor Browser's own update feature._
+
+torbrowser-launcher will verify Tor Browser's signature for you, to ensure the version you downloaded was cryptographically signed by Tor developers and was not tampered, read more about it on the program [security-design.md](https://github.com/micahflee/torbrowser-launcher/blob/develop/security_design.md).
 
 Install torbrowser-launcher:
 ```sh
