@@ -19,6 +19,16 @@ Read [TORIFICATION.MD](https://github.com/nyxnor/onioncomms/blob/main/TORIFICATI
 
 ## Class
 
+## tor
+
+* tor
+* Tor Browser
+
+### Remote-Administration
+
+* SSH
+* VNC
+
 ### File-Sharing
 
 * Magic-wormhole
