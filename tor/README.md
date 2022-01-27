@@ -41,6 +41,16 @@ Enter the directory:
 cd tor
 ```
 
+Select one of the 10 (arbitrary) latest stable releases:
+```git
+git tag --sort=-version:refname | grep -v -E "\-rc|\-alpha|\-alpha\-dev" | head -n 10
+```
+
+Checkout tag, where `<TAG>` is one of sorted from above output:
+```git
+git checkout <TAG>
+```
+
 Autogenerate the configure script:
 ```sh
 ./autogen.sh
