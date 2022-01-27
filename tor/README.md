@@ -5,10 +5,66 @@ From tor debian control:
 _Description: anonymizing overlay network for TCP_
 _Tor is a connection-based low-latency anonymous communication system._
 
+## Install
+
+From [TPO support for Relay Operators](https://support.torproject.org/relay-operators/packaged-tor/) (still valid for any Debian and derivatives user):
+
+If you're using Debian or Ubuntu especially, there are a number of benefits to installing Tor from the Tor Project's repository.
+- Your ulimit -n gets set to 32768 high enough for Tor to keep open all the connections it needs.
+- A user profile is created just for Tor, so Tor doesn't need to run as root.
+- An init script is included so that Tor runs at boot.
+- Tor runs with --verify-config, so that most problems with your config file get caught.
+- Tor can bind to low level ports, then drop privileges.
+
 Install tor:
 ```sh
 sudo apt install -y tor
 ```
+
+## Build
+
+Great for no trust on the maintainers of the tor package.
+
+Install requirements:
+```sh
+sudo apt install -y git build-essential automake libevent-dev libssl-dev zlib1g-dev
+```
+
+Clone the repository:
+```sh
+git clone https://github.com/torproject/tor
+```
+Note: github dot com was chosen because it is less likely do be blocked than a torproject dot org domain.
+
+Enter the directory:
+```sh
+cd tor
+```
+
+Autogenerate the configure script:
+```sh
+./autogen.sh
+```
+Note: if the script is not finding the libraries, set libvent directory:
+```sh
+./configure --with-libevent-dir=/usr/local
+```
+
+Configure the build:
+```sh
+./configure.sh
+```
+
+Make build:
+```sh
+sudo make
+```
+
+Install build:
+```sh
+sudo make install
+```
+
 
 ## Modifying configuration - Optional
 
@@ -155,6 +211,8 @@ curl --tlsv1.3 --proto =https --location --remote-name-all --remote-header-name 
 
 ## Verify the signature
 
+Keyring and public key verification will be covered in this topic, you only need to choose one.
+
 ### Keyring
 
 #### Import the keyring
@@ -187,17 +245,17 @@ Ignore `WARNING: This key is not certified with a trusted signature!`, it is a l
 
 Import the Tor Browser Developers signing key. These are some methods:
 
-1. Import the Tor Browser Developers public key from torproject dot org with curls:
+- Import the Tor Browser Developers public key from torproject dot org with curls:
 ```sh
 curl -s https://openpgpkey.torproject.org/.well-known/openpgpkey/torproject.org/hu/kounek7zrdx745qydx6p59t9mqjpuhdf | gpg --import -
 ```
 
-2. Import the Tor Browser Developers public key from openpgp dot org with curl:
+- Import the Tor Browser Developers public key from openpgp dot org with curl:
 ```sh
 curl -s https://keys.openpgp.org/vks/v1/by-fingerprint/EF6E286DDA85EA2A4BA7DE684E2C6E8793298290 | gpg --import -
 ```
 
-3. Import the Tor Browser Developers public key from openpgp dot org with gpg:
+- Import the Tor Browser Developers public key from openpgp dot org with gpg:
 ```sh
 gpg --keyserver keys.openpgp.org --search-keys torbrowser@torproject.org
 ```
