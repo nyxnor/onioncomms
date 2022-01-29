@@ -129,45 +129,29 @@ Remember what was discussed on [methods](#methods), per application proxy settin
 
 |Application|Protocol|Class|Application proxy settings|Force the application to use a proxy (torsocks)|Transparent Proxy|Isolating Proxy|
 ---|---|---|---|---|---|---
-|[Mumble](#mumble)|VoIP|IM and Voice chat|DNS leaks|yes|yes|yes|
-|[HexChat](#hexchat)|IRC|IM|yes|yes|yes|yes
-|[Irssi](#irssi)|IRC|IM|unsupported|yes|yes|yes|
-|[APT](#apt)|HTTP(S)|Package manager|yes|yes|yes|yes|
-|[SSH](#ssh)|SSH|Remote administration|yes|yes|yes|yes|
-|[wget](#wget)|FTP, HTTP(S)|Misc|yes|yes|yes|yes|
-|[git](#git)|GIT, SSH, HTTP(S)|Misc|yes|yes|yes|yes|
-|[gpg](#gpg)|HTTP(S), FTP, LDAP|Misc|yes|yes|yes|yes|
-|[youtube-dl](#youtube-dl)|HTTP(S), SOCKS|Misc|yes|yes|yes|yes|
-|[cURL](#apt)|FTP(S), HTTP(S), IMAP(S), LDAP(S), POP3(S), SCP, SFTP and many more|MISC|yes|yes|yes|yes|
+|Ricochet-refresh|HTTP|IM|yes|uncessesary|yes|yes
+|OnionShare|HTTP|IM, site, dropbox|unecessary|unecessary|yes|yes|
+|Magic-Wormhole|HTTP|dropbox|yes|unsupported|yes|yes|
+|Mumble|VoIP|IM, voice|unsupported|yes|yes|yes|
+|Asterisk|VoIP|IM, voice|todo|todo|todo|todo|
+|Pidgin|XMPP|IM|yes|yes|yes|yes|
+|Newsboat|RSS|News|yes|yes|yes|yes|
+|QuitRSS|RSS|News|yes|yes|yes|yes|
+|HexChat|IRC|IM|yes|yes|yes|yes|
+|Irssi|IRC|IM|unsupported|yes|yes|yes|
+|Remmina|VNC, RDP, SSH|Remote administration|todo|todo|todo|todo
+|OpenSSH|SSH|Remote administration|yes|yes|yes|yes|
+|APT|HTTP(S)|Misc|yes|yes|yes|yes|
+|wget|FTP, HTTP(S)|Misc|yes|yes|yes|yes|
+|git|GIT, SSH, HTTP(S)|Misc|yes|yes|yes|yes|
+|gpg|HTTP(S), FTP, LDAP|Misc|yes|yes|yes|yes|
+|youtube-dl|HTTP(S), SOCKS|Misc|yes|yes|yes|yes|
+|cURL|FTP(S), HTTP(S), IMAP(S), LDAP(S), POP3(S), SCP, SFTP and many more|Misc|yes|yes|yes|yes|
 
+- **Unsupported**: can not be configured or can be configured but does not work (leaks DNS or/and IP for example).
+- **Unecessary**: client application already run as a onion service, spawning a tor process or connecting to the current controller.
 
-## Mobile applications
-
-### Orbot
-
-On Android, configure [Orbot](https://guardianproject.info/apps/org.torproject.android/) to proxy the client application with Tor.
-
-After downlo
-ading (available on F-droid via Guardian Project repository), click the engine icon and select the applications to use Tor proxy, then to finish, enable `VPN mode`.
-
-It is also posible to [build](https://github.com/guardianproject/orbot/blob/master/BUILD.md) Orbot.
-
-Read also [this guide](https://nerdschalk.com/orbot/) for graphical interpretation.
-
-### TorBox
-
-If you have a [TorBox](https://github.com/radio24/TorBox) (Tor router), a separate host that creates a WiFi that routes data over the Tor network, connecting to this LAN is enough.
-
-### Comparison
-
-Orbot requires and Android operating system and it is an external wrapper to force the application to use a SOCKS proxy. Vulnerabilities of this method are that applications can try to circumnvent and router over plain net.
-
-TorBox requires a dedicated machine, normally a Raspberry Pi to serve as the router. It is less know than Orbot meaning less eyes on the code, but instead proxyfying the applications as Orbot does, it serves as an anonymizing middlebox (the router) that intercepts traffic from the clients and redirects  it through Tor.
-
-The other option is creating an anonymizing middlebox that intercepts traffic from other machines and redirects it through Tor.
-
-
-## Desktop applications
+## Desktop configuration
 
 ### Configure tor
 
@@ -225,300 +209,28 @@ Usage:
 curl https://check.torproject.org/api/ip
 ```
 
-### Mumble
 
-From mumble manual page:
+## Mobile applications
 
-_Mumble is an open source, low-latency, high quality voice chat software primarily intended for use while gaming._
+### Orbot
 
-Read also [TPO TorifyHowTo](https://gitlab.torproject.org/legacy/trac/-/wikis/doc/TorifyHOWTO/Mumble) and [Whonix wiki](https://www.whonix.org/wiki/VoIP#Mumble_Client).
+On Android, configure [Orbot](https://guardianproject.info/apps/org.torproject.android/) to proxy the client application with Tor.
 
-Install mumble:
-```sh
-sudo apt install -y mumble
-```
+After downlo
+ading (available on F-droid via Guardian Project repository), click the engine icon and select the applications to use Tor proxy, then to finish, enable `VPN mode`.
 
-Torify mumble:
-```
-torsocks mumble
-```
+It is also posible to [build](https://github.com/guardianproject/orbot/blob/master/BUILD.md) Orbot.
 
-**Warning**: Do not use mumble proxy settings, as of today (2021-01-25), mumble leaks DNS requests.
+Read also [this guide](https://nerdschalk.com/orbot/) for graphical interpretation.
 
+### TorBox
 
-### HexChat
+If you have a [TorBox](https://github.com/radio24/TorBox) (Tor router), a separate host that creates a WiFi that routes data over the Tor network, connecting to this LAN is enough.
 
-From hexchat site page:
+### Comparison
 
-_HexChat is an IRC client based on XChat, but unlike XChat it’s completely free for both Windows and Unix-like systems. Since XChat is open source, it’s perfectly legal. For more info, please read the Shareware background._
+Orbot requires and Android operating system and it is an external wrapper to force the application to use a SOCKS proxy. Vulnerabilities of this method are that applications can try to circumnvent and router over plain net.
 
-Read also [TPO TorifyHowTO](https://gitlab.torproject.org/legacy/trac/-/wikis/doc/TorifyHOWTO/HexChat) and [Whonix wiki](https://www.whonix.org/wiki/HexChat).
+TorBox requires a dedicated machine, normally a Raspberry Pi to serve as the router. It is less know than Orbot meaning less eyes on the code, but instead proxyfying the applications as Orbot does, it serves as an anonymizing middlebox (the router) that intercepts traffic from the clients and redirects  it through Tor.
 
-```sh
-sudo apt install -y hexchat hexchat-otr
-```
-
-When the chat window opens, click the `Settings` drop-down menu on the toolbar and select `Preferences`, then select `Network Setup` from the leftside menu. Configure `Proxy server` with your SOCKS infromation.
-
-
-### Irssi
-
-From irssi manual page:
-
-_Irssi  is  a  modular  Internet Relay Chat client; it is highly extensible and very secure. Being a fullscreen, termcap based client with many features, Irssi is easily extensible through scripts and modules._
-
-Read also [TPO TorifyHowTO](https://gitlab.torproject.org/legacy/trac/-/wikis/doc/TorifyHOWTO/irssi).
-
-Install irssi:
-```sh
-sudo apt install -y irssi
-```
-
-#### Torsocks
-
-Torify irssi:
-```
-torsocks irssi
-```
-
-#### MapAddress
-
-Or without Torsocks, use MapAddress on your torrc. This will allow you to connect to the local 10.10.x address directly, and Tor will translate it to the desired address. Note: The map address is generic, though it must be one not in use on your local network.
-```
-MapAddress 10.10.10.10 examplesite.onion
-```
-Then start irssi as you normally would.
-
-
-### APT
-
-From apt manual page:
-
-_apt provides a high-level commandline interface for the package management system. It is intended as an end user interface and enables some options better suited for interactive usage by default compared to more specialized APT tools like apt-get(8) and apt-cache(8)._
-
-Read also [TPO TorifyHowTO apt](https://gitlab.torproject.org/legacy/trac/-/wikis/doc/TorifyHOWTO/apt) and [TPO Apt over Tor](https://support.torproject.org/apt/apt-over-tor/)
-
-Install apt-transport-tor:
-```sh
-sudo apt install install -y apt-transport-tor
-```
-
-Edit your sources.list (use the list folder `/etc/apt/sources.list.d/tor.list`) to include only `tor+http://` for onion service URLs or `tor:https://` for plainnet URLs. Note: apt sources that have a `.onion` domain but do not have `tor://` prefix will fail to work as a security measure, atherwise, a rogue malicious DNS server could redirect users to a false domain and trick them into thinking they are using Tor when they are really not.
-
-`<DIST>` is your debian release version, also known as codename. You can find it by running: `grep -oP "VERSION_CODENAME=\K.*" /etc/os-release`, or `cat /etc/debian_version` or `lsb_release -sc`.
-
-
-Configure Debian plainnet repository to use tor:
-```sh
-deb tor+https://deb.debian.org/debian <DIST> main contrib non-free
-```
-
-Configure [Debian onion service repository](https://onion.debian.org/):
-```sh
-deb tor+http://2s4yqjx5ul6okpp3f2gaunr2syex5jgbfpfvhxxbbjwnrsvbk5v3qbid.onion/debian <DIST> main contrib non-free
-```
-
-Configure [Tor Project onion service repository](https://support.torproject.org/apt/apt-over-tor/):
-```sh
-deb tor+http://2s4yqjx5ul6okpp3f2gaunr2syex5jgbfpfvhxxbbjwnrsvbk5v3qbid.onion/debian <DIST> main
-```
-
-
-### SSH
-
-From OpenSSH manual page:
-
-_ssh (SSH client) is a program for logging into a remote machine and for executing commands on a remote machine.  It is intended to provide secure encrypted communications between two untrusted hosts over an insecure network.  X11 connections, arbitrary TCP ports and UNIX-domain sockets can also be forwarded over the secure channel._
-
-Read also [TPO TorifyHowTO ssh](https://gitlab.torproject.org/legacy/trac/-/wikis/doc/TorifyHOWTO/ssh).
-
-**Warning**: 'ssh some.host' will leak your UNIX username. If you do 'ssh theloginyouwant@some.host' it will not leak your username. That is why we suggest using non-identifying usernames on your machines to prevent such leaks in the first place.
-
-**Warning**: OpenSSH has a feature for looking up remote host keys in SSHFP DNS records;  don't use it, or it will try to resolve hostnames before it invokes your ProxyCommand and creates a leak.  To make sure this doesn't happen, pass -o VerifyHostKeyDNS=no on your ssh command line. A good command for checking for DNS leakage is: `tcpdump -vvvv -i <your_device> dst port 53`
-
-#### Torsocks
-
-To use SSH with torsocks, simply use the command:
-```sh
-torsocks ssh loginname@example.com
-```
-You may want to add an alias like so:
-```sh
-alias ssh-tor='torsocks ssh'
-```
-Then you can simply issue the command `ssh-tor example.com`.
-
-#### netcat-openbsd
-
-Install netcat-openbsd
-```sh
-sudo apt install -y netcat-openbsd
-```
-
-When using netcat-openbsd, you can use the ssh ProxyCommand option:
-```sh
-ssh -o "ProxyCommand nc -X 5 -x 127.0.0.1:9050 %h %p" <target_host>
-```
-
-To do it for every `.onion` host, use globs and edit your `~/.ssh/config` to look something like this:
-```
-host *.onion
-    user bar
-    port 22
-    ProxyCommand nc -X 5 -x 127.0.0.1:9050 %h %p
-```
-
-If preferred, it is possible to make an alias for this and place it in your `~/.bash_aliases` like so:
-```
-alias ssh-tor='ssh -o "ProxyCommand nc -X 5 -x 127.0.0.1:9050 %h %p"'
-```
-Then you can simply issue the command `ssh-tor example.com`.
-
-
-### Youtube-dl
-
-From youtube-dl manual page:
-
-_youtube-dl  is  a  command-line program to download videos from YouTube.com and a few more sites.  It requires the Python interpreter, version 2.6, 2.7, or 3.2+, and it is not platform specific.  It should work on your Unix box, on Windows or on macOS.  It is  released  to  the  public  domain, which means you can modify it, redistribute it or use it however you like._
-
-Read also [TPO TorifyHowTO youtube-dl](https://gitlab.torproject.org/legacy/trac/-/wikis/doc/TorifyHOWTO/Misc).
-
-Install youtube-dl:
-```sh
-sudo apt install -y youtube-dl
-```
-
-#### Proxy
-
-```sh
-youtube-dl --proxy socks5://127.0.0.1:9050/ https://www.youtube.com/watch?v=STRING
-```
-
-#### Torsocks
-
-```sh
-torsocks youtube-dl https://www.youtube.com/watch?v=STRING
-```
-
-
-### Wget
-
-From wget manual page:
-
-_Wget is a free utility for non-interactive download of files from the Web.  It supports HTTP, HTTPS, and FTP protocols, as well as retrieval through HTTP proxies._
-
-Read also [TPO TorifyHowTO wget](https://gitlab.torproject.org/legacy/trac/-/wikis/doc/TorifyHOWTO/Misc).
-
-Install wget:
-```sh
-sudo apt install wget
-```
-
-#### Proxy
-
-In the `/etc/wgetrc` for system wide or `~/.wgetrc` for user only:
-```sh
-use_proxy=yes
-http_proxy=127.0.0.1:9050
-https_proxy=127.0.0.1:9050
-```
-
-#### Torsocks
-
-Just prepend torsocks:
-```sh
-torsocks wget <URL>
-```
-
-
-### Curl
-
-From curl manual page:
-
-_curl is a tool to transfer data from or to a server, using one of the supported protocols (DICT, FILE, FTP, FTPS, GOPHER, HTTP, HTTPS, IMAP, IMAPS, LDAP, LDAPS, MQTT, POP3, POP3S, RTMP, RTMPS, RTSP, SCP, SFTP, SMB, SMBS, SMTP, SMTPS, TELNET and TFTP). The command is  designed  to  work  without user interaction._
-
-Read also [TPO TorifyHowTO cURL](https://gitlab.torproject.org/legacy/trac/-/wikis/doc/TorifyHOWTO/Misc).
-
-Install curl:
-```sh
-sudo apt install curl
-```
-
-#### Proxy
-
-To configure the proxy, use socks5h (socks5-hostname) to not leak DNS.
-
-Configure per user on `~/.curlrc`:
-```sh
-http_proxy=socks5h://127.0.0.1:9050
-HTTPS_PROXY=socks5h://127.0.0.1:9050
-ALL_PROXY=socks5h://127.0.0.1:9050
-```
-
-Or for one time run
-```sh
-curl -x socks5h://127.0.0.1:9050 <URL>
-```
-
-#### Torsocks
-
-Just prepend torsocks:
-```sh
-torsocks curl <URL>
-```
-
-
-### GPG
-
-From gpg manual page:
-
-_gpg  is  the OpenPGP part of the GNU Privacy Guard (GnuPG). It is a tool to provide digital encryption and signing services using the OpenPGP standard. gpg features complete key management and all the bells and whistles you would expect from a full OpenPGP implementation._
-
-Read also [TPO TorifyHowTO GnuPG](https://gitlab.torproject.org/legacy/trac/-/wikis/doc/TorifyHOWTO/GnuPG).
-
-Install gpg and dirmngr (to facilitate communication with keyservers):
-```sh
-sudo apt install gpg dirmngr
-```
-
-The option `--use-tor` switches Dirmngr and thus GnuPG into “Tor mode” to route all network access via the Tor Network. Certain other features are disabled in this mode. The effect of `--use-tor` cannot be overridden by any other command or even be reloading gpg-agent. The use of `--no-use-tor` disables the use of Tor. The default is to use Tor if it is available on startup or after reloading dirmngr."
-
-Another option is to insert use-tor into the `~/.gnupg/dirmngr.conf` file.
-
-
-### git
-
-From git manual page:
-
-_Git is a fast, scalable, distributed revision control system with an unusually rich command set that provides both high-level operations and full access to internals._
-
-Read also [Pastly Use Git over Tor](https://matt.traudt.xyz/posts/2016-10-29-use-git-over-tor/).
-
-Install git:
-```sh
-sudo apt install git
-```
-
-#### Proxy
-
-Set the global proxy:
-```git
-git config --global http.proxy 'socks5://127.0.0.1:9050'
-```
-
-Set per repository proxy:
-```sh
-git config http.proxy 'socks5://127.0.0.1:9050'
-```
-
-Or one time per connection:
-```git
-git -c http.proxy=socks5h://127.0.0.1:9050 clone http://xtlfhaspqtkeeqxk6umggfbr3gyfznvf4jhrge2fujz53433i2fcs3id.onion/project/web/community.git/
-```
-
-#### Torsocks
-
-Just prepend torsocks:
-```sh
-torsocks git clone http://xtlfhaspqtkeeqxk6umggfbr3gyfznvf4jhrge2fujz53433i2fcs3id.onion/project/web/community.git/
-```
+The other option is creating an anonymizing middlebox that intercepts traffic from other machines and redirects it through Tor.

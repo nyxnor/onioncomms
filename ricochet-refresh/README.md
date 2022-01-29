@@ -10,7 +10,7 @@ Visit the [releases page](https://github.com/blueprint-freespeech/ricochet-refre
 
 GPG Fingerprint: 07AA9DAA7088B94AF3D40084D83A26FDF5050FE0
 
-Define ricochet-refresh version:
+Define ricochet-refresh version you want available on the [releases page](https://github.com/blueprint-freespeech/ricochet-refresh/releases):
 ```sh
 ricochet_version="3.0.10"
 ```
@@ -24,8 +24,6 @@ Define binary file name:
 ```sh
 dist_file="ricochet-refresh-${ricochet_version}-linux-$(uname -m).tar.gz"
 ```
-
-dist_path
 
 Download binary, public key, message digest and its signed version,:
 ```sh

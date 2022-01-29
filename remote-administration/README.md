@@ -4,6 +4,8 @@ From OpenSSH manual page:
 
 _ssh (SSH client) is a program for logging into a remote machine and for executing commands on a remote machine.  It is intended to provide secure encrypted communications between two untrusted hosts over an insecure network.  X11 connections, arbitrary TCP ports and UNIX-domain sockets can also be forwarded over the secure channel_
 
+Read also [TPO TorifyHowTO ssh](https://gitlab.torproject.org/legacy/trac/-/wikis/doc/TorifyHOWTO/ssh).
+
 ## Client
 
 Install the openssh-client:
@@ -11,61 +13,52 @@ Install the openssh-client:
 sudo apt install -y openssh-client
 ```
 
+**Warning**: 'ssh some.host' will leak your UNIX username. If you do 'ssh theloginyouwant@some.host' it will not leak your username. That is why we suggest using non-identifying usernames on your machines to prevent such leaks in the first place.
+
+**Warning**: OpenSSH has a feature for looking up remote host keys in SSHFP DNS records;  don't use it, or it will try to resolve hostnames before it invokes your ProxyCommand and creates a leak.  To make sure this doesn't happen, pass -o VerifyHostKeyDNS=no on your ssh command line. A good command for checking for DNS leakage is: `tcpdump -vvvv -i <your_device> dst port 53`
+
+### Torsocks
+
+To use SSH with torsocks, simply use the command:
+```sh
+torsocks ssh loginname@example.com
+```
+You may want to add an alias like so:
+```sh
+alias ssh-tor='torsocks ssh'
+```
+Then you can simply issue the command `ssh-tor example.com`.
+
+### netcat-openbsd
+
+Install netcat-openbsd
+```sh
+sudo apt install -y netcat-openbsd
+```
+
+When using netcat-openbsd, you can use the ssh ProxyCommand option:
+```sh
+ssh -o "ProxyCommand nc -X 5 -x 127.0.0.1:9050 %h %p" <target_host>
+```
+
+To do it for every `.onion` host, use globs and edit your `~/.ssh/config` to look something like this:
+```
+host *.onion
+    user bar
+    port 22
+    ProxyCommand nc -X 5 -x 127.0.0.1:9050 %h %p
+```
+
+If preferred, it is possible to make an alias for this and place it in your `~/.bash_aliases` like so:
+```
+alias ssh-tor='ssh -o "ProxyCommand nc -X 5 -x 127.0.0.1:9050 %h %p"'
+```
+Then you can simply issue the command `ssh-tor example.com`.
+
 ### Hardening
 
 Read also [kicksecure Wiki](https://www.kicksecure.com/wiki/SSH).
 
-Generate a new key pair:
-```
-ssh-keygen -o -a 75 -t ed25519
-```
-- `-o` produces a key that is compatible with OpenSSH instead of the older style .pem.
-- `-a` refers to the number of rounds of KDF (key derivation function). This strengthens the key against a brute force attack to break the passphrase if the (private) key were to be stolen. A value of 75 to 100 is more than adequate. Remember that the more rounds that are specified, the longer it takes to authenticate (sign in). This depends on your CPU, your workload at the time of sign in, the amount of cores, and available memory among other factors.
-- `-t` specifies what type of key to generate. The choices are: rsa, ecdsa and ed25519. RSA and ECDSA are older keys, and OpenSSH recommends ed25519 as the best choice.
-
-Copy the key to the server you want to sign into:
-```ssh
-ssh-copy-id -i ~/.ssh/id_ed25519.pub user@127.0.0.1
-```
-- This only needs to be done once per server.
-- Replace `127.0.0.1` with the actual IP address of the server.
-- Replace `root` for the user you will actually sign in.
-- If this is a first time login and/or password based login, enter the SSH login password. Password should be provided by server provider. No password might be provided if the server provider already pre-installed a ssh key.
-
-On the client configuration file `/etc/ssh/ssh_config` or `/etc/ssh/ssh_config.d/hadening.conf`:
-```
-Host *
-
-## ipv4
-AddressFamily inet
-
-IdentityFile ~/.ssh/id_ed25519
-
-Port 22
-Protocol 2
-ForwardX11 no
-PubkeyAuthentication yes
-StrictHostKeyChecking ask
-VisualHostKey yes
-HashKnownHosts yes
-User user
-Host host
-SendEnv LANG LC_*
-
-## Strongest ciphers:
-Ciphers chacha20-poly1305@openssh.com
-
-## Most secure MACs:
-MACs hmac-sha2-512-etm@openssh.com
-
-## Secure Kex algos:
-KexAlgorithms curve25519-sha256
-
-Tunnel no
-#TunnelDevice any:any
-#PermitLocalCommand no
-#ProxyCommand ssh -q -W %h:%p gateway.example.com
-```
 
 ## Server
 

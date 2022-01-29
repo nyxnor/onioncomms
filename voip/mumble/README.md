@@ -1,9 +1,10 @@
 # Mumble
 
-Mumble is a free, open source, low latency, high quality voice chat application.
+From mumble manual page:
 
-From [mumble.info](https://www.mumble.info):
-> Mumble was the first VoIP application to establish true low latency voice communication over a decade ago. But low latency and gaming are not the only use cases it shines.
+_Mumble is an open source, low-latency, high quality voice chat software primarily intended for use while gaming._
+
+Read also [TPO TorifyHowTo](https://gitlab.torproject.org/legacy/trac/-/wikis/doc/TorifyHOWTO/Mumble) and [Whonix wiki](https://www.whonix.org/wiki/VoIP#Mumble_Client).
 
 You can review mumble source code on its [git](https://github.com/mumble-voip/mumble) repository, but if you are installing from debian repositories, you can find the source code on [debian salsa](https://salsa.debian.org/pkg-voip-team/mumble).
 
@@ -52,10 +53,12 @@ sudo apt install -y mumble
 Tor does not resolve UDP, so let's force TCP mode:
 `Configure` -> `Settings` -> `Network` -> `Connection` -> `Force TCP mode`.
 
-Do not use mumble proxy settings, it [does not work correctly](https://github.com/mumble-voip/mumble/issues/1812) as it tries to resolve the onion domain without the proxy leading to DNS leak. Leave `Direct conneciton` as the proxy type (default) and to connect to the onion mumble server, you must torify the client before it starts:
+Connect to the onion mumble server, you must torify the client before it starts:
 ```sh
 torsocks mumble
 ```
+
+**Warning**: Do not use mumble proxy settings, it [does not work correctly](https://github.com/mumble-voip/mumble/issues/1812) as it tries to resolve the onion domain without the proxy leading to DNS leak. Leave `Direct conneciton` as the proxy type (default).
 
 #### Configure mobile client
 
