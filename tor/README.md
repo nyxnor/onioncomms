@@ -177,6 +177,76 @@ Configure snowflake bridge (there is only one broker):
 Bridge snowflake 192.0.2.3:1 2B280B23E1107BB62ABFC40DDCC8824814F80A72
 ```
 
+### Client Authorization
+
+From [TPO community client-auth](https://community.torproject.org/onion-services/advanced/client-auth/):
+_Client authorization is a method to make an onion service private and authenticated. It requires Tor clients to provide an authentication credential in order to connect to the onion service. For v3 onion services, this method works with a pair of keys (a public and a private). The service side is configured with a public key and the client can only access it with a private key._
+
+_Note: Once you have configured client authorization, anyone with the address will not be able to access it from this point on. If no authorization is configured, the service will be accessible to anyone with the onion address._
+
+#### Generate key pair
+
+The key pair generation can be done by the server or the client. For security reasons, the best option is for the client to generate the keys and let the server only know the public part.
+
+Install requirements:
+```sh
+sudo apt install -y openssl basez
+```
+
+Generate a key using the algorithm x25519:
+```sh
+openssl genpkey -algorithm x25519 -out /tmp/k1.prv.pem
+```
+
+Generate the private key and format into base32:
+```sh
+grep -v " PRIVATE KEY" /tmp/k1.prv.pem | base64pem -d | tail -c 32 | base32 | sed "s/=//g" > /tmp/k1.prv.key
+```
+
+Generate the public key and format into base32:
+```sh
+openssl pkey -in /tmp/k1.prv.pem -pubout | grep -v " PUBLIC KEY" | base64pem -d | tail -c 32 | base32 | sed "s/=//g" > /tmp/k1.pub.key
+```
+
+#### Server
+
+The server should include a file inside the `<HiddenServiceDir>/authorized_clients/` directory, where `HiddenServiceDir` is the directory there the onion service directory is, and the file should have a suffix `.auth`, for example, `alice.auth`. The content format must be: `descriptor:x25519:<base32-encoded-public-key>`
+
+Substitute the `<base32-encoded-public-key>` for the correct value of the client public key in base32 format. For example, the file `/var/lib/tor/hidden_service/authorized_clients/alice.auth` should look like:
+```
+descriptor:x25519:N2NU7BSRL6YODZCYPN4CREB54TYLKGIE2KYOQWLFYC23ZJVCE5DQ
+```
+
+If you are planning to have more authenticated clients, each file must contain one line only. Any malformed file will be ignored.
+
+Note: Reload tor to apply the changes.
+
+**Important**: Revoking a client can be done by removing their ".auth" file, however the revocation will be in effect only after the tor process gets reloaded/restarted.
+
+**Important**: Revoking all clients means the service is no longer authenticated, anyone with the onion service hostname will be able to connect to the server.
+
+#### Client
+
+To access a version 3 onion service with client authorization as a client, make sure you have ClientOnionAuthDir set in your torrc. For example, add this line to `/etc/tor/torrc`:
+```
+ClientOnionAuthDir /var/lib/tor/onion_auth
+```
+
+Then, inside the `<ClientOnionAuthDir>` directory, create a file with the suffix `.auth_private` for the onion service corresponding to this key (i.e. `bob_onion.auth_private`).
+
+The content of the `<ClientOnionAuthDir>/<user>.auth_private` file should look like this: `<56-char-onion-addr-without-.onion-part>:descriptor:x25519:<x25519 private key in base32>`
+
+For example:
+```
+rh5d6reakhpvuxe2t3next6um6iiq4jf43m7gmdrphfhopfpnoglzcyd:descriptor:x25519:ZDUVQQ7IKBXSGR2WWOBNM3VP5ELNOYSSINDK7CAUN2WD7A3EKZWQ
+```
+
+Notice: Reload tor to apply configuration changes.
+
+The tor daemon will read files from `<ClientOnionAuthDir>` when the server requests client authorization, so no need to type the key during login.
+
+If on the other hand the client is using Tor Browser to authenticate to the onion site, the user does not necessarily need to edit Tor Browser's torrc. It is possible to enter the private key directly in the Tor Browser interface, see how to on [tb-manual](https://tb-manual.torproject.org/onion-services/).
+
 
 
 # Tor Browser
