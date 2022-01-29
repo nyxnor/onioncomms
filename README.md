@@ -22,7 +22,9 @@ Read [TORIFICATION.MD](https://github.com/nyxnor/onioncomms/blob/main/TORIFICATI
 ## tor
 
 * tor
+* torsocks
 * Tor Browser
+* Orbot
 
 ### Remote-Administration
 
@@ -52,6 +54,19 @@ Read [TORIFICATION.MD](https://github.com/nyxnor/onioncomms/blob/main/TORIFICATI
 ### Ricochet
 
 * Ricochet-refresh
+
+### IRC
+
+* HexChat
+* Irssi
+
+### Misc
+
+* APT
+* wget
+* cURL
+* gpg
+* git
 
 ### Gaming
 
