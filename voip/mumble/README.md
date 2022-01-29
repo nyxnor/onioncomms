@@ -11,7 +11,7 @@ You can review mumble source code on its [git](https://github.com/mumble-voip/mu
 
 ### Wiki
 
-[Wiki])(https://wiki.mumble.info/wiki/Main_Page)
+[Wiki](https://wiki.mumble.info/wiki/Main_Page)
 
 [Mumble server support](https://www.mumble.com/mumble-server-support.php)
 
@@ -52,7 +52,7 @@ sudo apt install -y mumble
 Tor does not resolve UDP, so let's force TCP mode:
 `Configure` -> `Settings` -> `Network` -> `Connection` -> `Force TCP mode`.
 
-Although there is a proxy option on `Configure` -> `Settings` -> `Network` -> `Proxy` -> `Type` -> `SOCKS5 Proxy`, it [does not work correctly](https://github.com/mumble-voip/mumble/issues/1812) as it tries to resolve the onion domain without the proxy, so we can leave `Direct conneciton` as the proxy type. To connect to the onion mumble server, we must torify the client before it starts:
+Do not use mumble proxy settings, it [does not work correctly](https://github.com/mumble-voip/mumble/issues/1812) as it tries to resolve the onion domain without the proxy leading to DNS leak. Leave `Direct conneciton` as the proxy type (default) and to connect to the onion mumble server, you must torify the client before it starts:
 ```sh
 torsocks mumble
 ```
