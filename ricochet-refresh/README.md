@@ -114,3 +114,7 @@ Install package
 ```sh
 sudo dpkg -i ../ricochet-refresh_*.deb
 ```
+
+## Backup
+
+To backup all the data, your ID, contact list and configurations, backup the `~/.local/share/ricochet-refresh` directory.
