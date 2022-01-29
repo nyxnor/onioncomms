@@ -271,6 +271,15 @@ instance, the connection is denied. If, for any reason, there is no way for
 torsocks to provide the Tor anonymity guarantee to your application, torsocks
 will force the application to quit and stop everything._
 
+## Install
+
+Install torsocks:
+```sh
+sudo apt install -y torsocks
+```
+
+## Build
+
 Install requirements:
 ```sh
 sudo apt install -y autoconf automake libtool gcc
