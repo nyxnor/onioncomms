@@ -109,7 +109,54 @@ Security overall:
 |**Advantages**| - Does not need third party software (wrapper) <br> <br> - Only a few proxy settings needed, sometimes a few more settings like 'use remote DNS' are required | - No proxy settings inside the application are needed <br> <br> - The use of 'Use Remote DNS' is not required, nor can it be forgotten | - No proxy settings inside the application needed <br> <br> - The use of 'Use Remote DNS' is not required, nor can it be forgotten | - All applications can only access internet over Tor. Direct connections are impossible due to either a virtual internal network and/or physical isolation. <br> <br> - Each application gets their own SocksPort. This can still be combined with Trans- and DnsPort |
 |**Disadvantages**| - Each application has to be checked and configured against DNS leaks <br> <br> - The application is not forced to honor the proxy settings. Some applications such as Skype and BitTorrent do not care what the proxy settings are and use direct connections anyway. Also once the application is infected, it's not forced to honor the application settings | - It's a redirector, not a jail. Applications may still decide to use fancy techniques to achieve direct connections. Also once the application or machine is infected with malware, it can break out of the redirector <br> <br> - There is no guarantees of it remaining bug-free <br> <br> - It also does not magically prevent protocol leaks, see [torsocks homepage](https://gitweb.torproject.org/torsocks.git/) for details. | - More complex and complicated, requires additional software <br> <br> - Too many non-IP related leaks, which are nonetheless serious issues. Rather use an [Isolating Proxy](https://trac.torproject.org/projects/tor/wiki/doc/TorifyHOWTO/IsolatingProxy) | - An Isolating Proxy requires at least two machines. Those machines can be either virtual machines or two physically isolated machines. Both machines are connected through an isolated LAN. One machine is called Gateway. The other one is called Workstation. |
 
-**Conclusion**:
+### Methods examples
+
+### Connect via Tor
+
+`curl` is just an example
+
+1. **Application proxy settings**
+
+**Warning**: depending on the implementation, it may leak DNS request.
+
+And on the client application, normally on `Network` -> `Proxy`, setup `SOCKS5` proxy with `Address: 127.0.0.1` and `Port: 9050`.
+
+Usage:
+```sh
+curl -x socks5h://127.0.0.1:9050 https://check.torproject.org/api/ip
+```
+
+2. **Enforce proxy**
+
+Normally `torsocks` or `orbot`.
+
+**Warning**: if the applications does not use `LD_PRELOAD` and do raw syscalls, it is gonna leak DNS requests.
+
+Usage:
+```sh
+torsocks curl https://check.torproject.org/api/ip
+```
+
+3. **Transparent Proxy**
+
+**Warning**:  Too many non-IP related leaks, which are nonetheless serious issues.
+
+Usage:
+```
+curl https://check.torproject.org/api/ip
+```
+
+4. **Isolating Proxy**
+
+All trafic must be routed through tor, no need to chage anything.
+
+Usage:
+```
+curl https://check.torproject.org/api/ip
+```
+
+
+### Method conclusion:
 
 - The best method is using Isolating Proxy, mostly done by Whonix with [Security by Isolation](https://www.whonix.org/wiki/About#Security_by_Isolation) to have online anonymity via Tor. The Gateways runs Tor processes while the Workstation runs user applications on a completely isolated network, therefore only connections through Tor are permitted. Read [Whonix design](https://www.whonix.org/wiki/Main_Page#Whonix_%E2%84%A2_Design)
 
@@ -150,87 +197,3 @@ Remember what was discussed on [methods](#methods), per application proxy settin
 
 - **Unsupported**: can not be configured or can be configured but does not work (leaks DNS or/and IP for example).
 - **Unecessary**: client application already run as a onion service, spawning a tor process or connecting to the current controller.
-
-## Desktop configuration
-
-### Configure tor
-
-Download tor:
-```sh
-sudo apt install -y tor
-```
-
-The tor package comes pre-configured on Debian, but in the case it is not found on `/usr/share/tor/tor-service-defaults-torrc` because it was built from source or deleted, add the following line to your tor configuration file, normally `/etc/tor/torrc`:
-```
-SocksPort 9050
-```
-
-### Connect via Tor
-
-`curl` is just an example
-
-1. **Application proxy settings**
-
-**Warning**: depending on the implementation, it may leak DNS request.
-
-And on the client application, normally on `Network` -> `Proxy`, setup `SOCKS5` proxy with `Address: 127.0.0.1` and `Port: 9050`.
-
-Usage:
-```sh
-curl -x socks5h://127.0.0.1:9050 https://check.torproject.org/api/ip
-```
-
-2. **Enforce proxy**
-
-Normally `torsocks` or `orbox`.
-
-**Warning**: if the applications does not use `LD_PRELOAD` and do raw syscalls, it is gonna leak DNS requests.
-
-Usage:
-```sh
-torsocks curl https://check.torproject.org/api/ip
-```
-
-3. **Transparent Proxy**
-
-**Warning**:  Too many non-IP related leaks, which are nonetheless serious issues.
-
-Usage:
-```
-curl https://check.torproject.org/api/ip
-```
-
-4. **Isolating Proxy**
-
-All trafic must be routed through tor, no need to chage anything.
-
-Usage:
-```
-curl https://check.torproject.org/api/ip
-```
-
-
-## Mobile applications
-
-### Orbot
-
-On Android, configure [Orbot](https://guardianproject.info/apps/org.torproject.android/) to proxy the client application with Tor.
-
-After downlo
-ading (available on F-droid via Guardian Project repository), click the engine icon and select the applications to use Tor proxy, then to finish, enable `VPN mode`.
-
-It is also posible to [build](https://github.com/guardianproject/orbot/blob/master/BUILD.md) Orbot.
-
-Read also [this guide](https://nerdschalk.com/orbot/) for graphical interpretation.
-
-### TorBox
-
-If you have a [TorBox](https://github.com/radio24/TorBox) (Tor router), a separate host that creates a WiFi that routes data over the Tor network, connecting to this LAN is enough.
-
-### Comparison
-
-Orbot requires and Android operating system and it is an external wrapper to force the application to use a SOCKS proxy. Vulnerabilities of this method are that applications can try to circumnvent and router over plain net.
-
-TorBox requires a dedicated machine, normally a Raspberry Pi to serve as the router. It is less know than Orbot meaning less eyes on the code, but instead proxyfying the applications as Orbot does, it serves as an anonymizing middlebox (the router) that intercepts traffic from the clients and redirects  it through Tor.
-
-The other option is creating an anonymizing middlebox that intercepts traffic from other machines and redirects it through Tor.

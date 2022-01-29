@@ -472,3 +472,29 @@ On the URL bar type `about:preferences#tor` -> Bridges -> Use a bridge -> Select
 If you can't connect to the Tor network, you can view Tor Browser logs.
 
 On the URL bar type `about:preferences#tor` -> Advanced -> View the Tor logs
+
+
+
+# Orbot
+
+Orbot: Android Onion Routing Robot
+
+From its [README](https://github.com/guardianproject/orbot):
+
+_Orbot is a freely licensed open-source application developed for the Android platform. It acts as a front-end to the Tor binary application, and also provides an HTTP Proxy for connecting web browsers and other HTTP client applications into the Tor SOCKS interface._
+
+- Download a free and open source program to check message digest, one example is [hash-checker](https://github.com/hash-checker/hash-checker)
+
+- Download F-Droid and its signed version on [f-droid.org](https://f-droid.org/)
+
+- Check the message digest of the F-Droid apk and the signature (.asc) file.
+
+- [Add](https://www.f-droid.org/en/tutorials/add-repo/) the [Guardian Project repo](https://guardianproject.info/fdroid/) to F-Droid and check the signing key fingerprint available at the end of the meta repository above.
+
+- Fetch sources by updating the repository.
+
+- Install Orbot through F-Droid by using the search bar.
+
+- See this [guide](https://nerdschalk.com/orbot/) about usage.
+
+- Optionally, use Orbot vpn mode on F-Droid to fetch from the Guardian Project [onion service repository](http://uzfomcxbx24d3esy7akpdbiovcfoorupz4aez6fpabmyh45nnqdp7mqd.onion/fdroid/repo).
