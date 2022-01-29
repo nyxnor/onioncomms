@@ -249,6 +249,61 @@ If on the other hand the client is using Tor Browser to authenticate to the onio
 
 
 
+# torsocks
+
+[What is torsocks?](https://gitweb.torproject.org/torsocks.git/tree/README.md)
+
+_Torsocks allows you to use most applications in a safe way with Tor. It ensures
+that DNS requests are handled safely and explicitly rejects any traffic other
+than TCP from the application you're using._
+
+_Torsocks is an ELF shared library that is loaded before all others. The
+library overrides every needed Internet communication libc function calls such
+as connect(2) or gethostbyname(3)._
+
+_BE ADVISE: It uses the LD\_PRELOAD mechanism (man ld.so.8) which means that if
+the application is not using the libc or for instance uses raw syscalls,
+torsocks will be useless and the traffic will not go through Tor._
+
+_This process is transparent to the user and if torsocks detects any
+communication that can't go through the Tor network such as UDP traffic, for
+instance, the connection is denied. If, for any reason, there is no way for
+torsocks to provide the Tor anonymity guarantee to your application, torsocks
+will force the application to quit and stop everything._
+
+Install requirements:
+```sh
+sudo apt install -y autoconf automake libtool gcc
+```
+
+Clone repository:
+```git
+git clone https://git.torproject.org/torsocks.git
+```
+
+Enter the directory:
+```sh
+cd torsocks
+```
+
+Build torsocks:
+```sh
+./autogen.sh
+./configure
+sudo make
+```
+
+Install torsocks:
+```sh
+sudo make install
+```
+
+Usage: `torsocks [application]`. Example:
+```
+torsocks ssh username@somehostname.onion
+```
+
+
 # Tor Browser
 
 Tor Browser is a ESR Firefox hardened and modified by the Tor Project to be used with the Tor network.
