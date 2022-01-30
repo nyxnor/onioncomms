@@ -1,11 +1,17 @@
-# tor
+# Tor's onion routing
+
+[A Peel of Onion](https://www.acsac.org/2011/program/keynotes/syverson.pdf) describes onion rounting sa follows:
+
+_Onion routing was invented to facilitate anonymous low-latency bidirectional communication, such as occurs in web browsing, remote login, chat, and other interactive applications. By only using public-key cryptography to establish session keys it allows for throughput and latency that would not be feasible if public-key operations were needed for each message (or packet) passing through the system. By following a multihop free-route path selection through a network of independently managed onion routers, it makes it hard for an adversary to observe traffic entering and leaving the system._
+
+## tor daemon
 
 From tor debian control:
 
 _Description: anonymizing overlay network for TCP_
 _Tor is a connection-based low-latency anonymous communication system._
 
-## Install
+### Install
 
 From [TPO support for Relay Operators](https://support.torproject.org/relay-operators/packaged-tor/) (still valid for any Debian and derivatives user):
 
@@ -21,7 +27,7 @@ Install tor:
 sudo apt install -y tor
 ```
 
-## Build
+### Build
 
 Great for no trust on the maintainers of the tor package.
 
@@ -76,7 +82,7 @@ sudo make install
 ```
 
 
-## Modifying configuration - Optional
+### Modifying configuration - Optional
 
 The tor package comes pre-configured on Debian, the defaults are on `/usr/share/tor/tor-service-defaults-torrc` or `/usr/local/etc/tor/torrc-defaults`, and the torrc is on `/etc/tor/torrc` or `/usr/local/etc/tor/torrc` (depends on your build), or `$HOME/.torrc` if that file is not found.
 
@@ -249,7 +255,7 @@ If on the other hand the client is using Tor Browser to authenticate to the onio
 
 
 
-# torsocks
+## torsocks
 
 [What is torsocks?](https://gitweb.torproject.org/torsocks.git/tree/README.md)
 
@@ -271,14 +277,14 @@ instance, the connection is denied. If, for any reason, there is no way for
 torsocks to provide the Tor anonymity guarantee to your application, torsocks
 will force the application to quit and stop everything._
 
-## Install
+### Install
 
 Install torsocks:
 ```sh
 sudo apt install -y torsocks
 ```
 
-## Build
+### Build
 
 Install requirements:
 ```sh
@@ -313,17 +319,17 @@ torsocks ssh username@somehostname.onion
 ```
 
 
-# Tor Browser
+## Tor Browser
 
 Tor Browser is a ESR Firefox hardened and modified by the Tor Project to be used with the Tor network.
 
 Note, if torproject dot org is blocked, try this mirror: https://cyberside.net.ee/sibul/download/
 
-## Graphical installation
+### Graphical installation
 
 Visit `https://www.torproject.org/download/` -> Download for linux and also download the signature file.
 
-## Command line installation
+### Command line installation
 
 Define the download root url:
 ```
@@ -353,13 +359,13 @@ dist_file="tor-browser-linux${arch}-${tor_browser_version}_${dist_lang}.tar.xz"
 curl --tlsv1.3 --proto =https --location --remote-name-all --remote-header-name ${dist_url%*/}/${tor_browser_version}/${dist_file}{,.asc}
 ```
 
-## Verify the signature
+### Verify the signature
 
 Keyring and public key verification will be covered in this topic, you only need to choose one.
 
-### Keyring
+#### Keyring
 
-#### Import the keyring
+##### Import the keyring
 
 Read also [TPO How can I verify Tor Browser's signature?](https://support.torproject.org/tbb/how-to-verify-signature/)
 
@@ -368,13 +374,13 @@ Import the Tor Browser Developers signing key with gpg locate:
 gpg --auto-key-locate nodefault,wkd --locate-keys torbrowser@torproject.org
 ```
 
-#### Save the keyring to a file
+##### Save the keyring to a file
 
 ```sh
 gpg --output ./tor.keyring --export 0xEF6E286DDA85EA2A4BA7DE684E2C6E8793298290
 ```
 
-#### Verify the signature
+##### Verify the signature
 
 Verify the file against the signed file using the keyring
 ```sh
@@ -383,9 +389,9 @@ gpgv --keyring ./tor.keyring ${dist_file}.asc ${dist_file}
 From gpg output, `Good signature` is what you need, with the primary key fingerprint matching the one verified by the user earlier on.
 Ignore `WARNING: This key is not certified with a trusted signature!`, it is a local trust level configuration for that key.
 
-### Public key
+#### Public key
 
-#### Import the public key
+##### Import the public key
 
 Import the Tor Browser Developers signing key. These are some methods:
 
@@ -404,7 +410,7 @@ curl -s https://keys.openpgp.org/vks/v1/by-fingerprint/EF6E286DDA85EA2A4BA7DE684
 gpg --keyserver keys.openpgp.org --search-keys torbrowser@torproject.org
 ```
 
-#### Verify the signature
+##### Verify the signature
 
 Verify the file against the signed file and the signers public key:
 ```sh
@@ -449,25 +455,25 @@ Install Tor Browser:
 torbrowser-launcher
 ```
 
-## Security level - Optional
+### Security level
 
 Disable certain web features that can be used to attack your security and anonymity.
 
 On the URL bar type `about:preferences#privacy` -> Security -> Security Level -> Choose your [level](https://tb-manual.torproject.org/security-settings/)
 
-## Onion Location - Optional
+### Onion Location
 
 Prioritize `.onion` sites when know, meaning that when the service operator has set the [`Onion-Location` header](https://community.torproject.org/onion-services/advanced/onion-location/) for the page you are visiting, you will be automatically redirected from the normal domain `.org` for example to the `.onion` domain.
 
 On the URL bar type `about:preferences#privacy` -> Browser Privacy -> Onion Services -> Prioritize .onion sites when known -> Always
 
-## Bridges - Optional
+### Bridges
 
 If you live in a censored environment, you might want to configure [bridges](https://tb-manual.torproject.org/bridges/) first to circumnvent censorship.
 
 On the URL bar type `about:preferences#tor` -> Bridges -> Use a bridge -> Select the option that best fit your threat model.
 
-## Debugging - Optional
+### Debugging
 
 If you can't connect to the Tor network, you can view Tor Browser logs.
 

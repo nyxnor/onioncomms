@@ -21,16 +21,16 @@ Read [TORIFICATION.MD](https://github.com/nyxnor/onioncomms/blob/main/TORIFICATI
 
 Some applications
 
-### [tor](./tor)
+### [tor](tor)
 
 Application|Client|Server
 -|-|-
-tor|yes|yes
-torsocks|yes|no
-Tor Browser|yes|no
-Orbot|yes|no
+[tor](tor#tor)|yes|yes
+[torsocks](tor#torsocks)|yes|no
+[Tor Browser](tor#tor-browser)|yes|no
+[Orbot](tor#orbot)|yes|no
 
-### [Remote-Administration](./remote-administration)
+### [Remote-Administration](remote-administration)
 
 Application|Client|Server
 -|-|-
@@ -40,21 +40,21 @@ Remmina|yes|yes
 
 TODO: Remmina guide is incomplete.
 
-### [File-Sharing](./file-sharing)
+### [File-Sharing](file-sharing)
 
 Application|Client|Server
 -|-|-
 Magic-wormhole|yes|yes
 OnionShare|no|yes
 
-### [RSS](./rss)
+### [RSS](rss)
 
 Application|Client|Server
 -|-|-
 Newsboat|yes|no
 QuiteRSS|yes|no
 
-### [VOIP](./voip)
+### [VOIP](voip)
 
 Application|Client|Server
 -|-|-
@@ -64,7 +64,7 @@ Asterisk|yes|no|
 
 TODO: Asterisk guide is incomplete.
 
-## [XMPP](./voip)
+## [XMPP](voip)
 
 Application|Client|Server
 -|-|-
@@ -75,7 +75,7 @@ Dino IM|yes|no|
 
 TODO: Every XMPP client guide is incomplete.
 
-## [IRC](./irc)
+## [IRC](irc)
 
 Application|Client|Server
 -|-|-
