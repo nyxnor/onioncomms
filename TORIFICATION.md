@@ -183,7 +183,7 @@ Remember what was discussed on [methods](#methods), per application proxy settin
 |Asterisk|VoIP|IM, voice|todo|todo|todo|todo|
 |Pidgin|XMPP|IM|yes|yes|yes|yes|
 |Newsboat|RSS|News|yes|yes|yes|yes|
-|QuitRSS|RSS|News|yes|yes|yes|yes|
+|QuiteRSS|RSS|News|yes|yes|yes|yes|
 |HexChat|IRC|IM|yes|yes|yes|yes|
 |Irssi|IRC|IM|unsupported|yes|yes|yes|
 |Remmina|VNC, RDP, SSH|Remote administration|todo|todo|todo|todo

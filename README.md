@@ -17,57 +17,81 @@ Read the README.md inside the folder of the program you want to use.
 
 Read [TORIFICATION.MD](https://github.com/nyxnor/onioncomms/blob/main/TORIFICATION.md).
 
-## Class
+## Applications
 
-## tor
+Some applications
 
-* tor
-* torsocks
-* Tor Browser
-* Orbot
+### [tor](./tor)
+
+Application|Client|Server
+-|-|-
+tor|yes|yes
+torsocks|yes|no
+Tor Browser|yes|no
+Orbot|yes|no
 
 ### Remote-Administration
 
-* SSH
-* VNC
+Application|Client|Server
+-|-|-
+ssh|yes|no
+sshd|no|yes
+Remmina|yes|yes
+
+TODO: Remmina guide is incomplete.
 
 ### File-Sharing
 
-* Magic-wormhole
-* OnionShare
+Application|Client|Server
+-|-|-
+Magic-wormhole|yes|yes
+OnionShare|no|yes
 
 ### RSS
 
-* Newboat
-* QuitRSS
+Application|Client|Server
+-|-|-
+Newsboat|yes|no
+QuiteRSS|yes|no
 
 ### VOIP
 
-* Mumble
-* Asterisk
+Application|Client|Server
+-|-|-
+Mumble|yes|no|
+Mumble-server|no|yes|
+Asterisk|yes|no|
 
-### XMPP
+TODO: Asterisk guide is incomplete.
 
-* Prosody
-* Ejabberd
+## XMPP
 
-### Ricochet
+Application|Client|Server
+-|-|-
+Prosody|no|yes|
+Ejabberd|no|yes|
+Pidgin|yes|no|
+Dino IM|yes|no|
 
-* Ricochet-refresh
+TODO: Every XMPP client guide is incomplete.
 
-### IRC
+## IRC
 
-* HexChat
-* Irssi
+Application|Client|Server
+-|-|-
+Hexchat|yes|no|
+Irssi|yes|no|
 
-### Misc
+## Misc
 
-* APT
-* wget
-* cURL
-* gpg
-* git
+Application|Client|Server
+-|-|-
+apt|yes|no|
+wget|yes|no|
+cURL|yes|no|
+git|yes|no|
+gpg|yes|no|
+Ricochet-refresh|yes|yes|
+TEG|yes|no|
 
-### Gaming
-
-* TEG
+TODO: TEG guide is incomplete.
