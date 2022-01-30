@@ -6,7 +6,7 @@ _ssh (SSH client) is a program for logging into a remote machine and for executi
 
 Read also [TPO TorifyHowTO ssh](https://gitlab.torproject.org/legacy/trac/-/wikis/doc/TorifyHOWTO/ssh).
 
-## Client
+## OpenSSH Client
 
 Install the openssh-client:
 ```sh
@@ -60,7 +60,7 @@ Then you can simply issue the command `ssh-tor example.com`.
 Read also [kicksecure Wiki](https://www.kicksecure.com/wiki/SSH).
 
 
-## Server
+## OpenSSH Server
 
 Install the openssh-server:
 ```sh

@@ -4,14 +4,30 @@
 
 _Onion routing was invented to facilitate anonymous low-latency bidirectional communication, such as occurs in web browsing, remote login, chat, and other interactive applications. By only using public-key cryptography to establish session keys it allows for throughput and latency that would not be feasible if public-key operations were needed for each message (or packet) passing through the system. By following a multihop free-route path selection through a network of independently managed onion routers, it makes it hard for an adversary to observe traffic entering and leaving the system._
 
-## tor daemon
+- [tor](#tor)
+  - [Install](#install-tor)
+  - [Build](#build-tor)
+  - [Apply configuration changes](#apply-configuration-changes)
+  - [SocksPort](#socksport)
+  - [Bridges](#bridges-tor)
+- [torsocks](#torsocks)
+  - [Install](#install-torsocks)
+  - [Build](#build-torsocks)
+- [Tor Browser](#tor-browser)
+  - [torbrowser-launcher](#torbrowser-launcher)
+  - [Graphical installation](#graphical-installation)
+  - [Command line installation](#command-line-installation)
+    - [Verify the signature](#verify-the-signature)
+- [Orbot](#orbot)
+
+## tor
 
 From tor debian control:
 
 _Description: anonymizing overlay network for TCP_
 _Tor is a connection-based low-latency anonymous communication system._
 
-### Install
+### Install tor
 
 From [TPO support for Relay Operators](https://support.torproject.org/relay-operators/packaged-tor/) (still valid for any Debian and derivatives user):
 
@@ -27,7 +43,7 @@ Install tor:
 sudo apt install -y tor
 ```
 
-### Build
+### Build tor
 
 Great for no trust on the maintainers of the tor package.
 
@@ -82,11 +98,11 @@ sudo make install
 ```
 
 
-### Modifying configuration - Optional
+### Modifying configuration
 
 The tor package comes pre-configured on Debian, the defaults are on `/usr/share/tor/tor-service-defaults-torrc` or `/usr/local/etc/tor/torrc-defaults`, and the torrc is on `/etc/tor/torrc` or `/usr/local/etc/tor/torrc` (depends on your build), or `$HOME/.torrc` if that file is not found.
 
-### Diversion - Conflicts
+### Diversion
 
 Modifying the torrc might cause diversion conflicts when the tor package is upgraded, because of this, this project recommends to modify alternatives files that will be included and read by tor when it starts. These files can be include with the key `%include`. Unfortunately the tor debian package does not commed with this configuration enabled by default, so you will need to edit the `torrc` anyway, add:
 ```
@@ -108,7 +124,7 @@ This is needed for client applications to use tor as a SOCKS proxy:
 SocksPort 127.0.0.1:9050
 ```
 
-### Bridges
+### Bridges tor
 
 Configure the bridges:
 Then configure the bridges using the following format:
@@ -277,14 +293,14 @@ instance, the connection is denied. If, for any reason, there is no way for
 torsocks to provide the Tor anonymity guarantee to your application, torsocks
 will force the application to quit and stop everything._
 
-### Install
+### Install torsocks
 
 Install torsocks:
 ```sh
 sudo apt install -y torsocks
 ```
 
-### Build
+### Build torsocks
 
 Install requirements:
 ```sh
@@ -324,6 +340,43 @@ torsocks ssh username@somehostname.onion
 Tor Browser is a ESR Firefox hardened and modified by the Tor Project to be used with the Tor network.
 
 Note, if torproject dot org is blocked, try this mirror: https://cyberside.net.ee/sibul/download/
+
+### torbrowser-launcher
+
+From torbrowser-launcher debian control:
+
+_Tor Browser Launcher is intended to make the Tor Browser Bundle (TBB) easier
+to maintain and use for GNU/Linux users. torbrowser-launcher handles
+downloading the most recent version of TBB for you, in your language and for
+your architecture. It also adds a "Tor Browser" application launcher to your
+operating system's menu._
+
+_When you first launch Tor Browser Launcher, it will download TBB from
+https://www.torproject.org/ and extract it to ~/.local/share/torbrowser,
+and then execute it._
+_Cache and configuration files will be stored in ~/.cache/torbrowser and
+~/.config/torbrowser._
+_Each subsequent execution after installation will simply launch the most
+recent TBB, which is updated using Tor Browser's own update feature._
+
+torbrowser-launcher will verify Tor Browser's signature for you, to ensure the version you downloaded was cryptographically signed by Tor developers and was not tampered, read more about it on the program [security-design.md](https://github.com/micahflee/torbrowser-launcher/blob/develop/security_design.md).
+
+Install torbrowser-launcher:
+```sh
+sudo apt install -y torbrowser-launcher
+```
+
+If you already have tor (the service, not the browser) already installed, the download will be over tor.
+
+It is better to have tor service installed before launching torbrowser
+
+torbrowser-launcher will attempt to download Tor Browser over Tor, using tor service if available, on its first run. It is safer to download using tor because you won't need to worry about the mirror being blocked by your country or ISP. If your tor `SocksPort` is not the standard `127.0.0.1:9050`, you should change the field `Tor server` to your configuration by running `torbrowser-launcher --settings`.
+
+Install Tor Browser:
+```sh
+torbrowser-launcher
+```
+
 
 ### Graphical installation
 
@@ -419,42 +472,6 @@ gpg --verify ${dist_file}.asc ${dist_file}
 From gpg output, `Good signature` is what you need, with the primary key fingerprint matching the one verified by the user earlier on.
 Ignore `WARNING: This key is not certified with a trusted signature!`, it is a local trust level configuration for that key.
 
-## torbrowser-launcher
-
-From torbrowser-launcher debian control:
-
-_Tor Browser Launcher is intended to make the Tor Browser Bundle (TBB) easier
-to maintain and use for GNU/Linux users. torbrowser-launcher handles
-downloading the most recent version of TBB for you, in your language and for
-your architecture. It also adds a "Tor Browser" application launcher to your
-operating system's menu._
-
-_When you first launch Tor Browser Launcher, it will download TBB from
-https://www.torproject.org/ and extract it to ~/.local/share/torbrowser,
-and then execute it._
-_Cache and configuration files will be stored in ~/.cache/torbrowser and
-~/.config/torbrowser._
-_Each subsequent execution after installation will simply launch the most
-recent TBB, which is updated using Tor Browser's own update feature._
-
-torbrowser-launcher will verify Tor Browser's signature for you, to ensure the version you downloaded was cryptographically signed by Tor developers and was not tampered, read more about it on the program [security-design.md](https://github.com/micahflee/torbrowser-launcher/blob/develop/security_design.md).
-
-Install torbrowser-launcher:
-```sh
-sudo apt install -y torbrowser-launcher
-```
-
-If you already have tor (the service, not the browser) already installed, the download will be over tor.
-
-It is better to have tor service installed before launching torbrowser
-
-torbrowser-launcher will attempt to download Tor Browser over Tor, using tor service if available, on its first run. It is safer to download using tor because you won't need to worry about the mirror being blocked by your country or ISP. If your tor `SocksPort` is not the standard `127.0.0.1:9050`, you should change the field `Tor server` to your configuration by running `torbrowser-launcher --settings`.
-
-Install Tor Browser:
-```sh
-torbrowser-launcher
-```
-
 ### Security level
 
 Disable certain web features that can be used to attack your security and anonymity.
@@ -480,8 +497,7 @@ If you can't connect to the Tor network, you can view Tor Browser logs.
 On the URL bar type `about:preferences#tor` -> Advanced -> View the Tor logs
 
 
-
-# Orbot
+## Orbot
 
 Orbot: Android Onion Routing Robot
 

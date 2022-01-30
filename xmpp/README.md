@@ -1,36 +1,17 @@
 # XMPP
 
-## Problems
+Definition from [xmpp.org](https://xmpp.org/about/):
 
-XMPP network is federated, this leads too centralization on third party hosted servers resulting on:
+_Extensible Messaging and Presence Protocol (XMPP) is an open XML technology for real-time communication, which powers a wide range of applications including instant messaging, presence and collaboration._
 
-* Plainnet servers exposing clients IP address (not your server, not your obfuscation technique).
-* Few servers accept Tor connection (not your server, not your freedom).
-* Normally no encryption, so no private conversations (not your server, not your recipient).
-* You can be censored (not your server, not your rules).
-* Ony modules made available by the server admin (not your server, not your configuration).
+## Servers
 
-## Analysis
-
-[XMPP](https://xmpp.org/) is the open standard for messaging and presence, this means:
-
-* Any client can connect to any other client from a different server.
-* No one owns XMPP. It's free and open for everyone. It is openly federated, anyone can host their own server.
-* It's a living standard. Engineers actively extend and improve it.
-
-## Solution
-
-Sovereignty, host your own server, your configuration, your rules, your privacy, your recipient.
-
-* Host your own server with [Prosody XMPP Server](https://prosody.im/)
-* Make it available via a [hidden service](https://community.torproject.org/onion-services/overview/), hiding your IP address and much more.
-* Require encryption to all connections to avoid MITM (Man In The Middle) with OTR (Off-the-Reconrd-Encryption) or OMEMO.
-* You are the only client by default, registration is disabled in the configuration. This incites people to host their own server instead of asking to be your client or registering themselves.
-* Choose your modules, enable what you want and disable what you dislike or find harmful
+Two servers are available, [Prosody](prosody) and [Ejabberd](ejabberd).
 
 ## Clients
 
-https://riseup.net/de/chat/clients
+- https://xmpp.org/software/clients/
+- https://riseup.net/de/chat/clients
 
 * [Pidgin](https://developer.pidgin.im/wiki/Using%20Pidgin)
 * [Dino IM](https://dino.im/)

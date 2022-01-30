@@ -15,7 +15,15 @@ Read the README.md inside the folder of the program you want to use.
 
 ## Client configuration
 
-Read [TORIFICATION.MD](https://github.com/nyxnor/onioncomms/blob/main/TORIFICATION.md).
+[TORIFICATION.MD](https://github.com/nyxnor/onioncomms/blob/main/TORIFICATION.md) is a must read on how to do properly torifications of applications. In short:
+- application proxy settings may fail and leak DNS requests and IP address (per application)
+- enforce proxy with a wrapper may also fail if not using the libc and leak DNS requests and IP address (torsocks, orbot)
+- transparent proxy has huge security problems, it does not protect agains protocol leaks but the IP address will never be revealed (Tails)
+- isolating proxy is the best solution as no leaks occur but it requires two host (virtual or physical) (Whonix)
+
+The client guides are intended for plain Debian users, therefore application proxy settings and enforcing a proxy with a wrapper is the only solution, which isn't great but it is what is available.
+
+Transparent proxy is hard to configure system wide and isolating proxy requires advanced configuration of creating a network between two hosts, these methods already route everything through Tor, so you don't need to configure the client to have onion routing, as all the traffic already does. What may change are simple configurations such as enforcing TCP mode or "hardening" by removing some "bad features" that leaks protocol information.
 
 ## Applications
 
@@ -34,9 +42,9 @@ Application|Client|Server
 
 Application|Client|Server
 -|-|-
-ssh|yes|no
-sshd|no|yes
-Remmina|yes|yes
+[OpenSSH client](remote-administration#openssh-client)|yes|no
+[OpenSSH server](remote-administration#openssh-server)|no|yes
+[Remmina](remote-administration#remmina)|yes|yes
 
 TODO: Remmina guide is incomplete.
 
@@ -44,54 +52,51 @@ TODO: Remmina guide is incomplete.
 
 Application|Client|Server
 -|-|-
-Magic-wormhole|yes|yes
-OnionShare|no|yes
+[Magic-wormhole](file-sharing#magic-wormhole)|yes|yes
+[OnionShare](file-sharing#onionshare)|no|yes
 
 ### [RSS](rss)
 
 Application|Client|Server
 -|-|-
-Newsboat|yes|no
-QuiteRSS|yes|no
+[Newsboat](rss#newsboat)|yes|no
+[QuiteRSS](rss#quiterss)|yes|no
 
 ### [VOIP](voip)
 
 Application|Client|Server
 -|-|-
-Mumble|yes|no|
-Mumble-server|no|yes|
-Asterisk|yes|no|
+[Mumble](voip#mumble)|yes|no|
+[Mumble-server](voip#mumble-server)|no|yes|
 
-TODO: Asterisk guide is incomplete.
-
-## [XMPP](voip)
+### [XMPP](xmpp)
 
 Application|Client|Server
 -|-|-
-Prosody|no|yes|
-Ejabberd|no|yes|
-Pidgin|yes|no|
-Dino IM|yes|no|
+[Prosody](xmpp/prosody)|no|yes|
+[Ejabberd](xmpp/ejabberd)|no|yes|
+[Pidgin](xmpp#clients)|yes|no|
+[Dino IM](xmpp#clients)|yes|no|
 
 TODO: Every XMPP client guide is incomplete.
 
-## [IRC](irc)
+### [IRC](irc)
 
 Application|Client|Server
 -|-|-
-Hexchat|yes|no|
-Irssi|yes|no|
+[Hexchat](irc#hexchat)|yes|no|
+[Irssi](irc#irssi)|yes|no|
 
-## [Misc](misc)
+### [Misc](misc)
 
 Application|Client|Server
 -|-|-
-apt|yes|no|
-wget|yes|no|
-cURL|yes|no|
-git|yes|no|
-gpg|yes|no|
-Ricochet-refresh|yes|yes|
-TEG|yes|no|
+[apt](misc#apt)|yes|no|
+[wget](misc#wget)|yes|no|
+[cURL](misc#curl)|yes|no|
+[git](misc#git)|yes|no|
+[gpg](misc#gpg)|yes|no|
+[Ricochet-refresh](misc#ricochet-refresh)|yes|yes|
+[TEG](misc#teg)|yes|no|
 
 TODO: TEG guide is incomplete.
