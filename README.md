@@ -30,7 +30,7 @@ torsocks|yes|no
 Tor Browser|yes|no
 Orbot|yes|no
 
-### Remote-Administration
+### [Remote-Administration](./remote-administration)
 
 Application|Client|Server
 -|-|-
@@ -40,21 +40,21 @@ Remmina|yes|yes
 
 TODO: Remmina guide is incomplete.
 
-### File-Sharing
+### [File-Sharing](./file-sharing)
 
 Application|Client|Server
 -|-|-
 Magic-wormhole|yes|yes
 OnionShare|no|yes
 
-### RSS
+### [RSS](./rss)
 
 Application|Client|Server
 -|-|-
 Newsboat|yes|no
 QuiteRSS|yes|no
 
-### VOIP
+### [VOIP](./voip)
 
 Application|Client|Server
 -|-|-
@@ -64,7 +64,7 @@ Asterisk|yes|no|
 
 TODO: Asterisk guide is incomplete.
 
-## XMPP
+## [XMPP](./voip)
 
 Application|Client|Server
 -|-|-
@@ -75,14 +75,14 @@ Dino IM|yes|no|
 
 TODO: Every XMPP client guide is incomplete.
 
-## IRC
+## [IRC](./irc)
 
 Application|Client|Server
 -|-|-
 Hexchat|yes|no|
 Irssi|yes|no|
 
-## Misc
+## [Misc](misc)
 
 Application|Client|Server
 -|-|-
