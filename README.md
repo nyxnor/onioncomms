@@ -1,19 +1,12 @@
 # OnionComms
 
-OnionComms is a repository for scripts to configure a chat server to run as an onion service and guides to configure client side applications to route packets through Tor, therefore, onion communications.
+OnionComms is a repository of script to run an onion server and guides to configure client side applications to connect to any onion service that uses the same protocol, therefore, onion communications.
 
-The scripts are posix compliant but they were built for Debian and derived systems due to:
-- configuration files not being host agnostic for some programs
-- service manager to be used to signal the programs that need to be restarted and reloaded
-- package name may differ on different systems as well as the package manager being used
+## Server
 
-Nonetheless, this should not discourage you from porting to any other *nix system.
+Read the README inside the folder of the program you want to use, the scripts are non-interactive unless a password needs to be set. They were designed for Debian and derived systems.
 
-## Server configuration
-
-Read the README.md inside the folder of the program you want to use.
-
-## Client configuration
+## Client
 
 [TORIFICATION.MD](https://github.com/nyxnor/onioncomms/blob/main/TORIFICATION.md) is a must read on how to do properly torifications of applications. In short:
 - application proxy settings may fail and leak DNS requests and IP address (per application)
@@ -27,9 +20,7 @@ Transparent proxy is hard to configure system wide and isolating proxy requires 
 
 ## Applications
 
-Some applications
-
-### [tor](tor)
+### [Tor](tor)
 
 Application|Client|Server
 -|-|-
@@ -52,7 +43,7 @@ TODO: Remmina guide is incomplete.
 
 Application|Client|Server
 -|-|-
-[Magic-wormhole](file-sharing#magic-wormhole)|yes|yes
+[Magic-wormhole](file-sharing#magic-wormhole)|yes|no
 [OnionShare](file-sharing#onionshare)|no|yes
 
 ### [RSS](rss)

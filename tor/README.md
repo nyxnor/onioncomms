@@ -4,21 +4,44 @@
 
 _Onion routing was invented to facilitate anonymous low-latency bidirectional communication, such as occurs in web browsing, remote login, chat, and other interactive applications. By only using public-key cryptography to establish session keys it allows for throughput and latency that would not be feasible if public-key operations were needed for each message (or packet) passing through the system. By following a multihop free-route path selection through a network of independently managed onion routers, it makes it hard for an adversary to observe traffic entering and leaving the system._
 
-- [tor](#tor)
-  - [Install](#install-tor)
-  - [Build](#build-tor)
-  - [Apply configuration changes](#apply-configuration-changes)
-  - [SocksPort](#socksport)
-  - [Bridges](#bridges-tor)
-- [torsocks](#torsocks)
-  - [Install](#install-torsocks)
-  - [Build](#build-torsocks)
-- [Tor Browser](#tor-browser)
-  - [torbrowser-launcher](#torbrowser-launcher)
-  - [Graphical installation](#graphical-installation)
-  - [Command line installation](#command-line-installation)
-    - [Verify the signature](#verify-the-signature)
-- [Orbot](#orbot)
+---
+
+- [Tor's onion routing](#tors-onion-routing)
+  - [tor](#tor)
+    - [Install tor](#install-tor)
+    - [Build tor](#build-tor)
+    - [Modifying configuration](#modifying-configuration)
+    - [Diversion of configuration](#diversion-of-configuration)
+    - [Apply configuration changes](#apply-configuration-changes)
+    - [SocksPort configuration](#socksport-configuration)
+    - [tor bridges](#tor-bridges)
+    - [Obfs4 and Meek](#obfs4-and-meek)
+    - [Snowflake](#snowflake)
+    - [Client Authorization](#client-authorization)
+      - [Generate key pair](#generate-key-pair)
+      - [Server configuration for Client Authorization](#server-configuration-for-client-authorization)
+      - [Client configuration for Client Authorization](#client-configuration-for-client-authorization)
+  - [torsocks](#torsocks)
+    - [Install torsocks](#install-torsocks)
+    - [Build torsocks](#build-torsocks)
+  - [Tor Browser](#tor-browser)
+    - [torbrowser-launcher](#torbrowser-launcher)
+    - [Tor Browser Graphical installation](#tor-browser-graphical-installation)
+    - [Tor Browser Command line installation](#tor-browser-command-line-installation)
+    - [Verify Tor Browser signature with keyring](#verify-tor-browser-signature-with-keyring)
+      - [Import the Tor Browser developers keyring](#import-the-tor-browser-developers-keyring)
+      - [Save the Tor Browser developers keyring to a file](#save-the-tor-browser-developers-keyring-to-a-file)
+      - [Verify the Tor Browser signature with keyring](#verify-the-tor-browser-signature-with-keyring)
+    - [Verify Tor Browser signature with public key](#verify-tor-browser-signature-with-public-key)
+      - [Import the Tor Browser developer public key](#import-the-tor-browser-developer-public-key)
+      - [Verify the Tor Browser signature with public key](#verify-the-tor-browser-signature-with-public-key)
+    - [Tor Browser Security level](#tor-browser-security-level)
+    - [Tor Browser Onion Location](#tor-browser-onion-location)
+    - [Tor Browser Bridges](#tor-browser-bridges)
+    - [Tor Browser Debugging](#tor-browser-debugging)
+  - [Orbot](#orbot)
+
+---
 
 ## tor
 
@@ -102,7 +125,7 @@ sudo make install
 
 The tor package comes pre-configured on Debian, the defaults are on `/usr/share/tor/tor-service-defaults-torrc` or `/usr/local/etc/tor/torrc-defaults`, and the torrc is on `/etc/tor/torrc` or `/usr/local/etc/tor/torrc` (depends on your build), or `$HOME/.torrc` if that file is not found.
 
-### Diversion
+### Diversion of configuration
 
 Modifying the torrc might cause diversion conflicts when the tor package is upgraded, because of this, this project recommends to modify alternatives files that will be included and read by tor when it starts. These files can be include with the key `%include`. Unfortunately the tor debian package does not commed with this configuration enabled by default, so you will need to edit the `torrc` anyway, add:
 ```
@@ -117,14 +140,14 @@ After modifying the configuration files, reload tor so it can be applied to the 
 sudo systemctl reload tor
 ```
 
-### SocksPort
+### SocksPort configuration
 
 This is needed for client applications to use tor as a SOCKS proxy:
 ```
 SocksPort 127.0.0.1:9050
 ```
 
-### Bridges tor
+### tor bridges
 
 Configure the bridges:
 Then configure the bridges using the following format:
@@ -168,24 +191,49 @@ Bridge meek_lite 192.0.2.2:2 97700DFE9F483596DDA6264C4D7DF7641E1E39CE url=https:
 ### Snowflake
 
 To use obfs4 or meek bridges, it is required to install snowflake-client (this might not work if the torproject dor org domain is blocked, because some dependencies are extracted from that domain, git subomain). Requirements is Go 1.13+.
+
+Install requirements:
 ```sh
-## install requirements
 sudo apt install -y git golang
-## clone repository
+```
+
+Clone repository:
+```git
 git clone https://github.com/keroserene/snowflake
-## change directory to snowflake/client
+```
+
+Change directory to snowflake/client:
+```sh
 cd snowflake/client
-## will force using Go modules even if the project is in your GOPATH
+```
+
+Force using Go modules even if the project is in your GOPATH:
+```sh
 export GO111MODULE="on"
-## install packages and dependencies
+```
+
+Install packages and dependencies:
+```go
 go get
-## compile package and dependencies
+```
+
+Compile package and dependencies:
+```go
 go build
-## move binary to path
+```
+
+Move binary to path:
+```sh
 sudo cp client /usr/bin/snowflake-client
-## go back to previous folder
+```
+
+Return to initial folder:
+```sh
 cd -
-## delete repository
+```
+
+Delete repository (optional):
+```sh
 rm -rf snowflake
 ```
 
@@ -230,7 +278,7 @@ Generate the public key and format into base32:
 openssl pkey -in /tmp/k1.prv.pem -pubout | grep -v " PUBLIC KEY" | base64pem -d | tail -c 32 | base32 | sed "s/=//g" > /tmp/k1.pub.key
 ```
 
-#### Server
+#### Server configuration for Client Authorization
 
 The server should include a file inside the `<HiddenServiceDir>/authorized_clients/` directory, where `HiddenServiceDir` is the directory there the onion service directory is, and the file should have a suffix `.auth`, for example, `alice.auth`. The content format must be: `descriptor:x25519:<base32-encoded-public-key>`
 
@@ -247,7 +295,7 @@ Note: Reload tor to apply the changes.
 
 **Important**: Revoking all clients means the service is no longer authenticated, anyone with the onion service hostname will be able to connect to the server.
 
-#### Client
+#### Client configuration for Client Authorization
 
 To access a version 3 onion service with client authorization as a client, make sure you have ClientOnionAuthDir set in your torrc. For example, add this line to `/etc/tor/torrc`:
 ```
@@ -378,11 +426,11 @@ torbrowser-launcher
 ```
 
 
-### Graphical installation
+### Tor Browser Graphical installation
 
 Visit `https://www.torproject.org/download/` -> Download for linux and also download the signature file.
 
-### Command line installation
+### Tor Browser Command line installation
 
 Define the download root url:
 ```
@@ -400,25 +448,32 @@ tor_browser_version="VERSION_YOU_WANT"
 ```
 
 Check for requirements and install the compressed archive and the signature file, that depends on your architecture and locale:
+Define architecture:
 ```sh
-## define architecture
 case "$(uname -m)" in x86_64|amd64) arch="64"; esac
-## check requirements and if not installed, install it
-! command -v curl >/dev/null && sudo apt update -y && sudo apt install -y curl
-## define file name
-dist_lang="$(echo "${LANG%%.*}" | tr "_" "-")"
-dist_file="tor-browser-linux${arch}-${tor_browser_version}_${dist_lang}.tar.xz"
-## download file and signature
-curl --tlsv1.3 --proto =https --location --remote-name-all --remote-header-name ${dist_url%*/}/${tor_browser_version}/${dist_file}{,.asc}
 ```
 
-### Verify the signature
+Check requirements and if not installed, install it:
+```sh
+! command -v curl >/dev/null && sudo apt update -y && sudo apt install -y curl
+```
 
-Keyring and public key verification will be covered in this topic, you only need to choose one.
+Define file name:
+```sh
+dist_lang="$(echo "${LANG%%.*}" | tr "_" "-")"
 
-#### Keyring
+dist_file="tor-browser-linux${arch}-${tor_browser_version}_${dist_lang}.tar.xz"
+```
 
-##### Import the keyring
+Download file and signature:
+```sh
+curl --tlsv1.3 --proto =https --location --remote-name-all --remote-header-name \
+${dist_url%*/}/${tor_browser_version}/${dist_file}{,.asc}
+```
+
+### Verify Tor Browser signature with keyring
+
+#### Import the Tor Browser developers keyring
 
 Read also [TPO How can I verify Tor Browser's signature?](https://support.torproject.org/tbb/how-to-verify-signature/)
 
@@ -427,13 +482,13 @@ Import the Tor Browser Developers signing key with gpg locate:
 gpg --auto-key-locate nodefault,wkd --locate-keys torbrowser@torproject.org
 ```
 
-##### Save the keyring to a file
+#### Save the Tor Browser developers keyring to a file
 
 ```sh
 gpg --output ./tor.keyring --export 0xEF6E286DDA85EA2A4BA7DE684E2C6E8793298290
 ```
 
-##### Verify the signature
+#### Verify the Tor Browser signature with keyring
 
 Verify the file against the signed file using the keyring
 ```sh
@@ -442,9 +497,9 @@ gpgv --keyring ./tor.keyring ${dist_file}.asc ${dist_file}
 From gpg output, `Good signature` is what you need, with the primary key fingerprint matching the one verified by the user earlier on.
 Ignore `WARNING: This key is not certified with a trusted signature!`, it is a local trust level configuration for that key.
 
-#### Public key
+### Verify Tor Browser signature with public key
 
-##### Import the public key
+#### Import the Tor Browser developer public key
 
 Import the Tor Browser Developers signing key. These are some methods:
 
@@ -463,7 +518,7 @@ curl -s https://keys.openpgp.org/vks/v1/by-fingerprint/EF6E286DDA85EA2A4BA7DE684
 gpg --keyserver keys.openpgp.org --search-keys torbrowser@torproject.org
 ```
 
-##### Verify the signature
+#### Verify the Tor Browser signature with public key
 
 Verify the file against the signed file and the signers public key:
 ```sh
@@ -472,25 +527,25 @@ gpg --verify ${dist_file}.asc ${dist_file}
 From gpg output, `Good signature` is what you need, with the primary key fingerprint matching the one verified by the user earlier on.
 Ignore `WARNING: This key is not certified with a trusted signature!`, it is a local trust level configuration for that key.
 
-### Security level
+### Tor Browser Security level
 
 Disable certain web features that can be used to attack your security and anonymity.
 
 On the URL bar type `about:preferences#privacy` -> Security -> Security Level -> Choose your [level](https://tb-manual.torproject.org/security-settings/)
 
-### Onion Location
+### Tor Browser Onion Location
 
 Prioritize `.onion` sites when know, meaning that when the service operator has set the [`Onion-Location` header](https://community.torproject.org/onion-services/advanced/onion-location/) for the page you are visiting, you will be automatically redirected from the normal domain `.org` for example to the `.onion` domain.
 
 On the URL bar type `about:preferences#privacy` -> Browser Privacy -> Onion Services -> Prioritize .onion sites when known -> Always
 
-### Bridges
+### Tor Browser Bridges
 
 If you live in a censored environment, you might want to configure [bridges](https://tb-manual.torproject.org/bridges/) first to circumnvent censorship.
 
 On the URL bar type `about:preferences#tor` -> Bridges -> Use a bridge -> Select the option that best fit your threat model.
 
-### Debugging
+### Tor Browser Debugging
 
 If you can't connect to the Tor network, you can view Tor Browser logs.
 
