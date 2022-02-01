@@ -13,6 +13,8 @@ _Onion routing was invented to facilitate anonymous low-latency bidirectional co
     - [Modifying configuration](#modifying-configuration)
     - [Diversion of configuration](#diversion-of-configuration)
     - [Apply configuration changes](#apply-configuration-changes)
+    - [Backup tor configuration files and relevant data](#backup-tor-configuration-files-and-relevant-data)
+    - [Onion Service example](#onion-service-example)
     - [SocksPort configuration](#socksport-configuration)
     - [tor bridges](#tor-bridges)
     - [Obfs4 and Meek](#obfs4-and-meek)
@@ -139,6 +141,23 @@ After modifying the configuration files, reload tor so it can be applied to the 
 ```sh
 sudo systemctl reload tor
 ```
+
+### Backup tor configuration files and relevant data
+
+The configuration files can be at `/etc/tor/torrc` and its included files should be on a folder near it, for example `/etc/tor/torrc.d`.
+
+The relevant data is related to keys, relay keys, onion service keys, cliean onion authentication keys. They should be found at the `DataDirectory`, `HiddenServiceDir` and `ClientOnionAuthDir` directories.
+
+Backup on another machine for safety, if possible, on a different location.
+
+### Onion Service example
+
+Create an onion service reacheable on port 80 (the directory path and the virtual port are madatory, the version is optional):
+```sh
+HiddenServiceDir /var/lib/tor/hs_example
+HiddenServicePort 80
+```
+Reload tor and you will be able to find the onion domain on the file `/var/lib/tor/hs_example/hostname`.
 
 ### SocksPort configuration
 
