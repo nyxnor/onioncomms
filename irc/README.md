@@ -4,6 +4,17 @@ From [Wikipedia](https://en.wikipedia.org/wiki/Internet_Relay_Chat):
 
 _Internet Relay Chat (IRC) is a text-based chat (instant messaging) system. IRC is designed for group communication in discussion forums, called channels, but also allows one-on-one communication via private messages as well as chat and data transfer, including file sharing. IRC is an open protocol that uses TCP and, optionally, TLS. An IRC server can connect to other IRC servers to expand the IRC network. Users access IRC networks by connecting a client to a server._
 
+---
+Table of contents
+---
+- [IRC](#irc)
+  - [HexChat](#hexchat)
+  - [Irssi](#irssi)
+    - [Torsocks](#torsocks)
+    - [MapAddress](#mapaddress)
+
+---
+
 ## HexChat
 
 From hexchat site page:

@@ -2,13 +2,30 @@
 
 OnionComms is a repository of script to run an onion server and guides to configure client side applications to connect to any onion service that uses the same protocol, therefore, onion communications.
 
+---
+Table of contents
+---
+- [OnionComms](#onioncomms)
+  - [Server](#server)
+  - [Client](#client)
+  - [Applications](#applications)
+    - [Tor](#tor)
+    - [Remote-Administration](#remote-administration)
+    - [File-Sharing](#file-sharing)
+    - [RSS](#rss)
+    - [VOIP](#voip)
+    - [XMPP](#xmpp)
+    - [IRC](#irc)
+    - [Misc](#misc)
+---
+
 ## Server
 
 Read the README inside the folder of the program you want to use, the scripts are non-interactive unless a password needs to be set. They were designed for Debian and derived systems.
 
 ## Client
 
-[TORIFICATION.MD](https://github.com/nyxnor/onioncomms/blob/main/TORIFICATION.md) is a must read on how to do properly torifications of applications. In short:
+[TORIFICATION.MD](TORIFICATION.md) is a must read on how to do properly torifications of applications. In short:
 - application proxy settings may fail and leak DNS requests and IP address (per application)
 - enforce proxy with a wrapper may also fail if not using the libc and leak DNS requests and IP address (torsocks, orbot)
 - transparent proxy has huge security problems, it does not protect agains protocol leaks but the IP address will never be revealed (Tails)

@@ -2,6 +2,20 @@
 
 VoIP services convert your voice into a digital signal that travels over the Internet. If you are calling a regular phone number, the signal is converted to a regular telephone signal before it reaches the destination. VoIP can allow you to make a call directly from a computer, a special VoIP phone, or a traditional phone connected to a special adapter.
 
+---
+Table of contents
+---
+
+- [VOIP](#voip)
+  - [Mumble Server](#mumble-server)
+  - [Mumble-client](#mumble-client)
+    - [Security](#security)
+    - [Configure desktop client](#configure-desktop-client)
+    - [Configure mobile client](#configure-mobile-client)
+    - [Connect to server](#connect-to-server)
+
+---
+
 ## Mumble Server
 
 If `Sandbox 1` was previously set in the Tor configuration file, it must be removed for Mumble functionality.
@@ -13,7 +27,7 @@ sudo ./setup.sh
 
 TODO: To install uMurmur https://github.com/umurmur/umurmur/wiki/Building
 
-## Mumble
+## Mumble Client
 
 From mumble manual page:
 

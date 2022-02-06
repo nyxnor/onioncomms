@@ -1,8 +1,16 @@
 # RSS
 
-## Client
+---
+Table of contents
+---
 
-### Newsboat
+- [RSS](#rss)
+  - [Newsboat](#newsboat)
+  - [QuiteRSS](#quiterss)
+
+---
+
+## Newsboat
 
 Newsboat is an Atomm and RSS reader from the terminal.
 
@@ -29,7 +37,7 @@ Start newsboat and refresh feeds from start:
 newsboat -r
 ```
 
-### QuiteRSS
+## QuiteRSS
 
 QuiteRSS is a feed reader written in Qt/C++.
 

@@ -2,6 +2,31 @@
 
 Misc stands for miscellaneous, dealing with diverse subjects.
 
+---
+Table of contents
+---
+- [Misc](#misc)
+  - [APT](#apt)
+  - [Youtube-dl](#youtube-dl)
+    - [Proxy youtube-dl](#proxy-youtube-dl)
+    - [Torsocks youtube-dl](#torsocks-youtube-dl)
+  - [Wget](#wget)
+    - [Proxy wget](#proxy-wget)
+    - [Torsocks wget](#torsocks-wget)
+  - [Curl](#curl)
+    - [Proxy curl](#proxy-curl)
+    - [Torsocks curl](#torsocks-curl)
+  - [GPG](#gpg)
+  - [git](#git)
+    - [Proxy git](#proxy-git)
+    - [Torsocks git](#torsocks-git)
+  - [Ricochet-refresh](#ricochet-refresh)
+    - [Install Ricochet-refresh](#install-ricochet-refresh)
+    - [Build Ricochet-refresh](#build-ricochet-refresh)
+    - [Backup Ricochet-refresh](#backup-ricochet-refresh)
+  - [TEG](#teg)
+
+---
 
 ## APT
 
@@ -49,13 +74,13 @@ Install youtube-dl:
 sudo apt install -y youtube-dl
 ```
 
-### Proxy
+### Proxy youtube-dl
 
 ```sh
 youtube-dl --proxy socks5://127.0.0.1:9050/ https://www.youtube.com/watch?v=STRING
 ```
 
-### Torsocks
+### Torsocks youtube-dl
 
 ```sh
 torsocks youtube-dl https://www.youtube.com/watch?v=STRING
@@ -75,7 +100,7 @@ Install wget:
 sudo apt install wget
 ```
 
-### Proxy
+### Proxy wget
 
 In the `/etc/wgetrc` for system wide or `~/.wgetrc` for user only:
 ```sh
@@ -84,7 +109,7 @@ http_proxy=127.0.0.1:9050
 https_proxy=127.0.0.1:9050
 ```
 
-### Torsocks
+### Torsocks wget
 
 Just prepend torsocks:
 ```sh
@@ -105,7 +130,7 @@ Install curl:
 sudo apt install curl
 ```
 
-### Proxy
+### Proxy curl
 
 To configure the proxy, use socks5h (socks5-hostname) to not leak DNS.
 
@@ -121,7 +146,7 @@ Or for one time run
 curl -x socks5h://127.0.0.1:9050 <URL>
 ```
 
-### Torsocks
+### Torsocks curl
 
 Just prepend torsocks:
 ```sh
@@ -142,10 +167,6 @@ Install gpg and dirmngr (to facilitate communication with keyservers):
 sudo apt install gpg dirmanager
 ```
 
-### Hardening
-
-Read also [kicksecure Wiki](https://www.kicksecure.com/wiki/SSH).
-
 The option `--use-tor` switches Dirmngr and thus GnuPG into “Tor mode” to route all network access via the Tor Network. Certain other features are disabled in this mode. The effect of `--use-tor` cannot be overridden by any other command or even be reloading gpg-agent. The use of `--no-use-tor` disables the use of Tor. The default is to use Tor if it is available on startup or after reloading dirmngr."
 
 Another option is to insert use-tor into the `~/.gnupg/dirmngr.conf` file.
@@ -164,7 +185,7 @@ Install git:
 sudo apt install git
 ```
 
-### Proxy
+### Proxy git
 
 Set the global proxy:
 ```git
@@ -181,7 +202,7 @@ Or one time per connection:
 git -c http.proxy=socks5h://127.0.0.1:9050 clone http://xtlfhaspqtkeeqxk6umggfbr3gyfznvf4jhrge2fujz53433i2fcs3id.onion/project/web/community.git/
 ```
 
-### Torsocks
+### Torsocks git
 
 Just prepend torsocks:
 ```sh
@@ -195,7 +216,7 @@ From its [README](https://github.com/blueprint-freespeech/ricochet-refresh#how-d
 
 _Ricochet Refresh uses the Tor network to establish a peer-to-peer connection between you and your contact. Ricochet Refresh creates a service on the Tor network which contacts can connect to. Tor's rendezvous system makes it extremely difficult for anyone to learn the identity of a Tor user, including you._
 
-## Install
+### Install Ricochet-refresh
 
 Visit the [releases page](https://github.com/blueprint-freespeech/ricochet-refresh/releases) and download the version you desire. On the same page, also download the files ` ricochet-refresh-release-signing.pub`, `sha256-sums.txt` and `sha256-sums.txt.asc`.
 
@@ -259,7 +280,7 @@ sudo cp ricochet-refresh /usr/bin/
 ```
 It also contains a separate tor binary, but it is not necessary to use it if you already have tor installed. This also prevents against using an old tor version.
 
-## Build
+### Build Ricochet-refresh
 
 Read also [BUILDING.md](https://github.com/blueprint-freespeech/ricochet-refresh/blob/main/BUILDING.md).
 
@@ -306,7 +327,7 @@ Install package
 sudo dpkg -i ../ricochet-refresh_*.deb
 ```
 
-## Backup
+### Backup Ricochet-refresh
 
 To backup all the data, your ID, contact list and configurations, backup the `~/.local/share/ricochet-refresh` directory.
 

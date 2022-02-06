@@ -1,4 +1,20 @@
-# Magic-Wormhole
+# File sharing
+
+Programs that faciliate file sharing over Tor.
+
+---
+Table of contents
+---
+- [File sharing](#file-sharing)
+  - [Magic-Wormhole](#magic-wormhole)
+    - [Usage Magic-Wormhole](#usage-magic-wormhole)
+  - [OnionShare](#onionshare)
+    - [Usage OnionShare](#usage-onionshare)
+  - [Extras todo](#extras-todo)
+
+---
+
+## Magic-Wormhole
 
 This package provides a library and a command-line tool named wormhole, which makes it possible to get arbitrary-sized files and directories (or short pieces of text) from one computer to another. The two endpoints are identified by using identical “wormhole codes”: in general, the sending machine generates and displays the code, which must then be typed into the receiving machine.
 
@@ -9,7 +25,7 @@ Install magic-wormhole:
 sudo apt install -y magic-wormhole
 ```
 
-## Usage
+### Usage Magic-Wormhole
 
 From [wormhole tor docs](https://github.com/magic-wormhole/magic-wormhole/blob/master/docs/tor.md):
 _You should use `--tor` rather than running wormhole under tsocks or torsocks because the magic-wormhole "Transit" protocol normally sends the IP addresses of each computer to its peer, to attempt a direct connection between the two (somewhat like the FTP protocol would do). External tor-ifying programs don't know about this, so they can't strip these addresses out. Using `--tor` puts magic-wormhole into a mode where it does not share any IP addresses._
@@ -42,7 +58,7 @@ _In the future, wormhole with --tor will listen on an ephemeral "onion service" 
 
 _However the current version of wormhole does not use onion services. For now, if both sides use --tor, any file transfers must use the transit relay, since neither side will advertise any listening IP addresses._
 
-# OnionShare
+## OnionShare
 
 From [onionshare website](https://onionshare.org/)
 _OnionShare is an open source tool that lets you securely and anonymously share files, host websites, and chat with friends using the Tor network._
@@ -60,11 +76,13 @@ Instalation:
 sudo apt install -y onionshare
 ```
 
-## Usage
+### Usage OnionShare
 
 Read more about its [features](https://docs.onionshare.org/2.5/en/features.html) and [advanced usage](https://docs.onionshare.org/2.5/en/advanced.html) on OnionShare website.
 
 
+
+## Extras todo
 
 https://github.com/hbons/SparkleShare
 

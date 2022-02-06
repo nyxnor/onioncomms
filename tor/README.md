@@ -5,6 +5,8 @@
 _Onion routing was invented to facilitate anonymous low-latency bidirectional communication, such as occurs in web browsing, remote login, chat, and other interactive applications. By only using public-key cryptography to establish session keys it allows for throughput and latency that would not be feasible if public-key operations were needed for each message (or packet) passing through the system. By following a multihop free-route path selection through a network of independently managed onion routers, it makes it hard for an adversary to observe traffic entering and leaving the system._
 
 ---
+Table of contents
+---
 
 - [Tor's onion routing](#tors-onion-routing)
   - [tor](#tor)
@@ -74,7 +76,7 @@ Great for no trust on the maintainers of the tor package.
 
 Install requirements:
 ```sh
-sudo apt install -y git build-essential automake libevent-dev libssl-dev zlib1g-dev
+sudo apt install -y git build-essential automake libevent-dev libssl-dev zlib1g-dev asciidoc
 ```
 
 Clone the repository:
@@ -102,7 +104,7 @@ Autogenerate the configure script:
 ```sh
 ./autogen.sh
 ```
-Note: if the script is not finding the libraries, set libvent directory:
+Note: if the script is not finding the libraries, set libevent directory:
 ```sh
 ./configure --with-libevent-dir=/usr/local
 ```

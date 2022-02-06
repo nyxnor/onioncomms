@@ -1,4 +1,22 @@
-# SSH
+# Remote-administration
+
+This section is dedicated to administrators of remote servers and how to interact with external hosts over Tor.
+
+---
+Table of contents
+---
+
+- [Remote-administration](#remote-administration)
+  - [SSH](#ssh)
+    - [OpenSSH Client](#openssh-client)
+      - [Torsocks ssh](#torsocks-ssh)
+      - [netcat-openbsd ssh](#netcat-openbsd-ssh)
+    - [OpenSSH Server](#openssh-server)
+  - [VNC](#vnc)
+
+---
+
+## SSH
 
 From OpenSSH manual page:
 
@@ -6,7 +24,7 @@ _ssh (SSH client) is a program for logging into a remote machine and for executi
 
 Read also [TPO TorifyHowTO ssh](https://gitlab.torproject.org/legacy/trac/-/wikis/doc/TorifyHOWTO/ssh).
 
-## OpenSSH Client
+### OpenSSH Client
 
 Install the openssh-client:
 ```sh
@@ -17,7 +35,7 @@ sudo apt install -y openssh-client
 
 **Warning**: OpenSSH has a feature for looking up remote host keys in SSHFP DNS records;  don't use it, or it will try to resolve hostnames before it invokes your ProxyCommand and creates a leak.  To make sure this doesn't happen, pass -o VerifyHostKeyDNS=no on your ssh command line. A good command for checking for DNS leakage is: `tcpdump -vvvv -i <your_device> dst port 53`
 
-### Torsocks
+#### Torsocks ssh
 
 To use SSH with torsocks, simply use the command:
 ```sh
@@ -29,7 +47,7 @@ alias ssh-tor='torsocks ssh'
 ```
 Then you can simply issue the command `ssh-tor example.com`.
 
-### netcat-openbsd
+#### netcat-openbsd ssh
 
 Install netcat-openbsd
 ```sh
@@ -55,12 +73,7 @@ alias ssh-tor='ssh -o "ProxyCommand nc -X 5 -x 127.0.0.1:9050 %h %p"'
 ```
 Then you can simply issue the command `ssh-tor example.com`.
 
-### Hardening
-
-Read also [kicksecure Wiki](https://www.kicksecure.com/wiki/SSH).
-
-
-## OpenSSH Server
+### OpenSSH Server
 
 Install the openssh-server:
 ```sh
@@ -79,12 +92,7 @@ Reload tor:
 sudo systemctl reload tor
 ```
 
-### Hardening
-
-Read also [kicksecure Wiki](https://www.kicksecure.com/wiki/SSH).
-
-
-# VNC
+## VNC
 
 From remmina manual page:
 
