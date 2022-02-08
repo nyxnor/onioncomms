@@ -35,7 +35,6 @@ limits = {
 }
 
 
-
 VirtualHost "hostname"
 
 http_host = "http.hostname"

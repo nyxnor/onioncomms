@@ -10,6 +10,7 @@
 
 #########################
 ## Variables
+default_account="user"
 requirements="tor prosody prosody-modules prosody-migrator lua-zlib openssl"
 tor_conf="/etc/tor/torrc"
 tor_data_dir="/var/lib/tor"
@@ -109,13 +110,13 @@ fi
 
 
 #########################
-## Administrator
-printf '%s\n' "Register the password for admin@${hostname}:"
-prosodyctl register admin "${hostname}"
+## Account registration
+printf '%s\n' "Register the password for ${default_account}@${hostname}:"
+prosodyctl register "${default_account}" "${hostname}"
 
 printf %s"
 Log in with your XMPP client:
-user: admin
+user: ${default_account}
 hostname: ${hostname}
 port: 5222
 
