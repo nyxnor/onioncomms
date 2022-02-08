@@ -29,22 +29,9 @@ https_interfaces = { "*", "::" }
 
 -- mod_limits --
 limits = {
-
-    c2s = {
-    rate = "100kb/s";
-    burst = "30s";
-    };
-
-    s2sin = {
-    rate = "100kb/s";
-    burst = "30s";
-    };
-
-    s2sout = {
-    rate = "100kb/s";
-    burst = "30s";
-    };
-
+    c2s = { rate = "100kb/s"; burst = "30s" };
+    s2sin = { rate = "100kb/s"; burst = "30s" };
+    s2sout = { rate = "100kb/s"; burst = "30s" };
 }
 
 

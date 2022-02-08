@@ -15,7 +15,7 @@ tor_conf="/etc/tor/torrc"
 tor_data_dir="/var/lib/tor"
 tor_data_dir_services="${tor_data_dir}/services"
 tor_service_dir="${tor_data_dir_services}/xmpp_prosody"
-#prosody_lib_dir="/usr/lib/prosody"
+prosody_lib_dir="/usr/lib/prosody"
 prosody_var_dir="/var/lib/prosody"
 prosody_conf_dir="/etc/prosody"
 toplevel="$(git rev-parse --show-toplevel)"
@@ -60,11 +60,13 @@ hostname=$(cat ${tor_service_dir}/hostname)
 ## Prosody
 echo "Setting up prosody"
 
-## https://hg.prosody.im/prosody-modules/file/tip/mod_omemo_all_access/README.markdown
-##  0.11  Not needed, mod\_pep provides this feature already
-# cp "${script_dir}"/mod_*.lua "${prosody_lib_dir}/modules/"
-# chmod 644 "${prosody_lib_dir}/modules/mod_omemo_all_access.lua"
-# chown -R root:root "${prosody_lib_dir}"
+## https://hg.prosody.im/prosody-modules
+for mod in "${script_dir}"/modules/mod_*.lua; do
+  [ -n "${mod}" ] && cp "${mod}" "${prosody_lib_dir}/modules/"
+done
+find "${prosody_lib_dir}" -type d -exec chmod 755 {} \;
+find "${prosody_lib_dir}" -type f -exec chmod 644 {} \;
+chown -R root:root "${prosody_lib_dir}"
 
 ## necessary to include virtual hosts configuration files
 if ! grep -q -F "Include \"conf.d/*.cfg.lua\"" "${prosody_conf_dir}/prosody.cfg.lua"; then
