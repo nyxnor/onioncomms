@@ -36,6 +36,7 @@ Gajim|Linux / Windows|yes|no|yes
 Dino IM|Linux|yes|no
 Psi+|Linux / macOS / Other / Windows|yes|yes|yes
 Pidgin|Linux / macOS / Other / Windows|no|yes
+Adium|macOS|no|yes|no
 Conversations|Android|yes|no
 
 ### Profanity

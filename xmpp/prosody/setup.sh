@@ -15,7 +15,7 @@ tor_conf="/etc/tor/torrc"
 tor_data_dir="/var/lib/tor"
 tor_data_dir_services="${tor_data_dir}/services"
 tor_service_dir="${tor_data_dir_services}/xmpp_prosody"
-prosody_lib_dir="/usr/lib/prosody"
+#prosody_lib_dir="/usr/lib/prosody"
 prosody_var_dir="/var/lib/prosody"
 prosody_conf_dir="/etc/prosody"
 toplevel="$(git rev-parse --show-toplevel)"
@@ -86,19 +86,16 @@ chown -R root:prosody "${prosody_conf_dir}"
 
 #########################
 ## Certificate
-if ! test -f "${prosody_var_dir}/${hostname}.crt"; then
+if [ ! -f "${prosody_conf_dir}/${hostname}.crt" ]; then
   echo "Configuring the SSL certificate"
   #prosodyctl cert generate "${hostname}"
-  cp "${script_dir}"/openssl.cnf "${script_dir}/${hostname}.openssl.cnf"
-  sed -i'' "s/example.com/${hostname}/g" "${script_dir}/${hostname}.openssl.cnf"
-  openssl req -new -x509 -days 1825 -nodes -out "${prosody_conf_dir}/certs/${hostname}.crt" -newkey rsa:4096 -keyout "${prosody_conf_dir}/certs/${hostname}.key" -config  "${script_dir}/${hostname}.openssl.cnf"
-  rm -f "${script_dir}/${hostname}.openssl.cnf"
+  cp "${script_dir}"/openssl.cnf "${prosody_conf_dir}/${hostname}.cnf"
+  sed -i'' "s/example.com/${hostname}/g" "${script_dir}/${hostname}.cnf"
+  openssl req -new -x509 -days 1825 -nodes -out "${prosody_conf_dir}/${hostname}.crt" -newkey rsa:4096 -keyout "${prosody_conf_dir}/${hostname}.key" -config  "${prosody_conf_dir}/${hostname}.cnf"
 
+  chmod 640 "${prosody_conf_dir}/certs/${hostname}.cnf"
   chmod 640 "${prosody_conf_dir}/certs/${hostname}.crt"
   chmod 640 "${prosody_conf_dir}/certs/${hostname}.key"
-
-  ln -sf "${prosody_var_dir}/${hostname}.crt" "${prosody_conf_dir}/certs/${hostname}.crt"
-  ln -sf "${prosody_var_dir}/${hostname}.key" "${prosody_conf_dir}/certs/${hostname}.key"
 
   chown -R prosody:prosody "${prosody_var_dir}"
   chown -R root:prosody "${prosody_conf_dir}"
